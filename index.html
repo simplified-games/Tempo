@@ -539,7 +539,7 @@ dialog[open]{animation:fuad .2s var(--ease);}
     <div class="field"><label class="flabel">Your name</label><input id="set-name" class="inp"></div>
     <div class="field"><label class="flabel">Mode</label><select id="set-mode" class="inp"><option value="normal">Normal</option><option value="student">Student</option></select></div>
     <hr class="divider">
-    <div class="field"><label class="flabel">AI Backend URL (Deno Deploy)</label><input id="set-be" class="inp" placeholder="https://simplifiedtest10-focus.deno.dev"></div>
+    <div class="field"><label class="flabel">AI Backend URL (Deno Deploy)</label><input id="set-be" class="inp" placeholder="https://focus.simplifiedtest10.deno.net/"></div>
     <p style="font-size:.71rem;color:var(--muted);margin-top:-4px;">Deploy <code style="font-size:.68rem;background:var(--surf3);padding:1px 4px;border-radius:3px;">deno-backend.ts</code> to <a href="https://console.deno.com/simplifiedtest10/focus" target="_blank" style="color:var(--blue);">console.deno.com/simplifiedtest10/focus</a></p>
     <hr class="divider">
     <div class="field"><label class="flabel">Google Apps Script URL (Classroom)</label><input id="set-gc" class="inp" placeholder="https://script.google.com/macros/s/…/exec"></div>
@@ -571,7 +571,7 @@ const XP_PER_LEVEL = 100;
 // ── DEFAULT STATE ──────────────────────────────────
 const DS = {
   setup:false, mode:'normal', name:'', theme:'dark',
-  backendUrl:'https://simplifiedtest10-focus.deno.dev',
+  backendUrl:'https://focus.simplifiedtest10.deno.net/',
   gcUrl:'',
   lists:{}, tasks:[], projects:[], streaks:[],
   currentView:'all', icsData:null,
