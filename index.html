@@ -7,1348 +7,1161 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Firebase SDK (optional, loaded only when config is provided) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <style>
-/* ════════════════════ TOKENS ════════════════════ */
-:root{
-  --bg:#0b0b0e;--surf:#111116;--surf2:#18181f;--surf3:#21212a;--surf4:#2a2a35;
+/* ══════════ DESIGN TOKENS — BLUE THEME ══════════ */
+:root {
+  --bg:#0b0b0f;--surf:#111117;--surf2:#18181e;--surf3:#21212a;--surf4:#2a2a35;
   --bdr:rgba(255,255,255,0.06);--bdr2:rgba(255,255,255,0.11);--bdr3:rgba(255,255,255,0.18);
-  --txt:#eeeee8;--muted:#6b6b72;--subtle:#35353d;
-  --accent:#c8f135;--acdim:rgba(200,241,53,0.08);--acbdr:rgba(200,241,53,0.22);--actext:#b8e028;
-  --blue:#60a5fa;--bluedim:rgba(96,165,250,0.09);--bluebdr:rgba(96,165,250,0.22);
-  --purple:#a78bfa;--purpledim:rgba(167,139,250,0.09);--purplebdr:rgba(167,139,250,0.22);
-  --orange:#fb923c;--orangedim:rgba(251,146,60,0.09);--orangebdr:rgba(251,146,60,0.22);
-  --red:#f87171;--reddim:rgba(248,113,113,0.09);--redbdr:rgba(248,113,113,0.22);
-  --green:#4ade80;--greendim:rgba(74,222,128,0.09);--greenbdr:rgba(74,222,128,0.22);
-  --gold:#fbbf24;--golddim:rgba(251,191,36,0.12);--goldbdr:rgba(251,191,36,0.3);
-  --r4:4px;--r8:8px;--r12:12px;--r16:16px;--r24:24px;--r50:50px;
-  --t:.17s;--ease:cubic-bezier(.4,0,.2,1);
-  --sb:240px;--font:'Bricolage Grotesque',system-ui,sans-serif;--mono:'DM Mono',monospace;
+  --txt:#eeeef0;--muted:#6b6b78;--subtle:#35353f;
+  --accent:#4f9ef8;--acdim:rgba(79,158,248,0.1);--acbdr:rgba(79,158,248,0.25);--actext:#7bb8fc;
+  --purple:#a78bfa;--purpledim:rgba(167,139,250,0.09);--purplebdr:rgba(167,139,250,0.25);
+  --green:#4ade80;--greendim:rgba(74,222,128,0.09);--greenbdr:rgba(74,222,128,0.25);
+  --orange:#fb923c;--orangedim:rgba(251,146,60,0.09);--orangebdr:rgba(251,146,60,0.25);
+  --red:#f87171;--reddim:rgba(248,113,113,0.09);--redbdr:rgba(248,113,113,0.25);
+  --gold:#fbbf24;--golddim:rgba(251,191,36,0.12);--goldbdr:rgba(251,191,36,0.32);
+  --sky:#38bdf8;--skydim:rgba(56,189,248,0.09);--skybdr:rgba(56,189,248,0.25);
+  --r4:4px;--r8:8px;--r12:12px;--r16:16px;--r24:24px;
+  --t:.16s;--ease:cubic-bezier(.4,0,.2,1);
+  --sb:248px;--font:'Bricolage Grotesque',system-ui,sans-serif;--mono:'DM Mono',monospace;
 }
-[data-theme="light"]{
-  --bg:#f0f0eb;--surf:#fafafa;--surf2:#f0f0eb;--surf3:#e5e5de;--surf4:#d8d8d0;
+[data-theme="light"] {
+  --bg:#f0f0f5;--surf:#fafafe;--surf2:#eeeef5;--surf3:#e2e2ec;--surf4:#d5d5e0;
   --bdr:rgba(0,0,0,0.07);--bdr2:rgba(0,0,0,0.12);--bdr3:rgba(0,0,0,0.2);
-  --txt:#111110;--muted:#6b6b6a;--subtle:#c0c0b8;
-  --accent:#4a8e10;--acdim:rgba(74,142,16,0.07);--acbdr:rgba(74,142,16,0.2);--actext:#3a7a08;
-  --blue:#2563eb;--bluedim:rgba(37,99,235,0.07);--bluebdr:rgba(37,99,235,0.2);
-  --purple:#7c3aed;--purpledim:rgba(124,58,237,0.07);--purplebdr:rgba(124,58,237,0.2);
-  --orange:#ea580c;--orangedim:rgba(234,88,12,0.07);--orangebdr:rgba(234,88,12,0.2);
-  --red:#dc2626;--reddim:rgba(220,38,38,0.07);--redbdr:rgba(220,38,38,0.2);
-  --green:#16a34a;--greendim:rgba(22,163,74,0.07);--greenbdr:rgba(22,163,74,0.2);
-  --gold:#d97706;--golddim:rgba(217,119,6,0.1);--goldbdr:rgba(217,119,6,0.28);
+  --txt:#111118;--muted:#5a5a68;--subtle:#b8b8c8;
+  --accent:#2563eb;--acdim:rgba(37,99,235,0.07);--acbdr:rgba(37,99,235,0.22);--actext:#1d4ed8;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{color-scheme:dark;}[data-theme="light"]{color-scheme:light;}
 body{font-family:var(--font);background:var(--bg);color:var(--txt);height:100vh;overflow:hidden;display:flex;transition:background var(--t),color var(--t);}
 button,input,select,textarea{font-family:var(--font);}
-::-webkit-scrollbar{width:3px;height:3px;}
-::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px;}
-a{color:inherit;text-decoration:none;}
-/* ════════════════════ SIDEBAR ════════════════════ */
-#sidebar{
-  width:var(--sb);background:var(--surf);
-  border-right:1px solid var(--bdr);
-  display:flex;flex-direction:column;height:100vh;flex-shrink:0;
-  overflow-y:auto;overflow-x:hidden;
-}
-.sb-top{padding:16px 12px 10px;border-bottom:1px solid var(--bdr);}
-.logo{display:flex;align-items:center;gap:8px;margin-bottom:11px;}
+::-webkit-scrollbar{width:3px;height:3px;}::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px;}
+/* ══════════ SIDEBAR ══════════ */
+#sidebar{width:var(--sb);background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;height:100vh;flex-shrink:0;overflow-y:auto;overflow-x:hidden;}
+.sb-top{padding:14px 12px 10px;border-bottom:1px solid var(--bdr);}
+.logo{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .logo-mark{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.logo-name{font-size:1.1rem;font-weight:800;letter-spacing:-.06em;}
-.xp-bar-wrap{background:var(--surf3);border-radius:var(--r50);height:5px;overflow:hidden;margin-bottom:4px;}
-.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--blue));border-radius:var(--r50);transition:width .6s var(--ease);}
-.xp-info{display:flex;justify-content:space-between;font-size:.65rem;font-weight:600;color:var(--muted);}
-.level-badge{display:inline-flex;align-items:center;gap:4px;background:var(--golddim);border:1px solid var(--goldbdr);color:var(--gold);padding:2px 8px;border-radius:var(--r50);font-size:.68rem;font-weight:800;letter-spacing:.04em;margin-bottom:8px;}
-.sb-nav{padding:8px 8px 0;display:flex;flex-direction:column;gap:1px;}
-.sb-section-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--subtle);padding:10px 8px 4px;display:block;}
-.ni{
-  display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:var(--r8);
-  cursor:pointer;font-size:.825rem;font-weight:500;color:var(--muted);
-  border:1px solid transparent;transition:all var(--t) var(--ease);user-select:none;
-}
-.ni svg{flex-shrink:0;opacity:.65;transition:opacity var(--t);}
+.logo-name{font-size:1.08rem;font-weight:800;letter-spacing:-.06em;}
+.user-row{display:flex;align-items:center;gap:7px;margin-bottom:9px;}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--acdim);border:1.5px solid var(--acbdr);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;overflow:hidden;}
+.avatar img{width:100%;height:100%;object-fit:cover;}
+.user-name{font-size:.8rem;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mode-pill{background:var(--acdim);color:var(--actext);border:1px solid var(--acbdr);padding:2px 7px;border-radius:20px;font-size:.59rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0;}
+/* XP bar */
+.xp-section{margin-bottom:2px;}
+.level-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.level-badge{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:800;color:var(--gold);}
+.xp-track{background:var(--surf3);border-radius:4px;height:4px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:4px;transition:width .6s var(--ease);}
+.xp-nums{display:flex;justify-content:space-between;font-size:.6rem;font-weight:600;color:var(--muted);margin-top:3px;}
+/* nav */
+.sb-nav{padding:8px 8px 0;flex:1;}
+.sbl{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--subtle);padding:9px 8px 4px;display:block;}
+.ni{display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:var(--r8);cursor:pointer;font-size:.815rem;font-weight:500;color:var(--muted);border:1px solid transparent;transition:all var(--t);user-select:none;margin-bottom:1px;}
+.ni svg{flex-shrink:0;opacity:.6;transition:opacity var(--t);}
 .ni:hover{background:var(--surf2);color:var(--txt);}
 .ni:hover svg{opacity:1;}
 .ni.active{background:var(--acdim);color:var(--actext);border-color:var(--acbdr);font-weight:600;}
 .ni.active svg{opacity:1;}
-.ni-count{margin-left:auto;font-size:.65rem;font-weight:700;background:var(--surf3);padding:1px 6px;border-radius:var(--r50);color:var(--muted);}
-.ni.active .ni-count{background:var(--acbdr);color:var(--actext);}
-.ni-sub{color:var(--subtle);font-size:.72rem;font-weight:600;margin-left:auto;}
-/* list rows in sidebar */
-.sb-lists{padding:2px 8px;}
-.lr{display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:var(--r8);cursor:pointer;font-size:.81rem;font-weight:500;color:var(--muted);transition:all var(--t) var(--ease);}
+.nic{margin-left:auto;font-size:.63rem;font-weight:700;background:var(--surf3);padding:1px 6px;border-radius:20px;color:var(--muted);}
+.ni.active .nic{background:var(--acbdr);color:var(--actext);}
+/* mini rows */
+.lr{display:flex;align-items:center;gap:7px;padding:5px 9px;border-radius:var(--r8);cursor:pointer;font-size:.8rem;font-weight:500;color:var(--muted);transition:all var(--t);}
 .lr:hover{background:var(--surf2);color:var(--txt);}
 .lr.active{color:var(--txt);font-weight:600;}
 .lr-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .lr-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.lr-cnt{font-size:.65rem;color:var(--subtle);}
-.lr-del{background:none;border:none;color:var(--subtle);cursor:pointer;width:16px;height:16px;display:none;align-items:center;justify-content:center;border-radius:3px;font-size:.75rem;flex-shrink:0;transition:color var(--t);}
-.lr:hover .lr-del{display:flex;}
-.lr-del:hover{color:var(--red);}
-/* streak mini rows */
-.streak-mini{display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:var(--r8);cursor:pointer;font-size:.81rem;font-weight:500;color:var(--muted);transition:all var(--t);position:relative;}
-.streak-mini:hover{background:var(--surf2);color:var(--txt);}
-.streak-mini.active{color:var(--txt);font-weight:600;}
-.streak-fire{font-size:.85rem;flex-shrink:0;}
-.streak-mini-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.streak-days{font-size:.65rem;font-weight:700;color:var(--orange);}
-/* project mini rows */
-.proj-mini{display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:var(--r8);cursor:pointer;font-size:.81rem;font-weight:500;color:var(--muted);transition:all var(--t);}
-.proj-mini:hover{background:var(--surf2);color:var(--txt);}
-.proj-mini.active{color:var(--txt);font-weight:600;}
-.proj-mini-icon{font-size:.85rem;flex-shrink:0;}
-.proj-mini-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.proj-mini-pct{font-size:.65rem;font-weight:700;color:var(--muted);}
+.lr-cnt{font-size:.62rem;color:var(--subtle);}
+.lr-del{background:none;border:none;color:var(--subtle);cursor:pointer;width:15px;height:15px;display:none;align-items:center;justify-content:center;border-radius:3px;font-size:.72rem;transition:color var(--t);flex-shrink:0;}
+.lr:hover .lr-del{display:flex;}.lr-del:hover{color:var(--red);}
+.proj-mini,.streak-mini{display:flex;align-items:center;gap:7px;padding:5px 9px;border-radius:var(--r8);cursor:pointer;font-size:.8rem;font-weight:500;color:var(--muted);transition:all var(--t);}
+.proj-mini:hover,.streak-mini:hover{background:var(--surf2);color:var(--txt);}
+.proj-mini.active,.streak-mini.active{color:var(--txt);font-weight:600;}
+.streak-days{font-size:.62rem;font-weight:700;color:var(--orange);margin-left:auto;}
+.proj-pct{font-size:.62rem;font-weight:700;color:var(--muted);margin-left:auto;}
 /* footer */
-.sb-footer{margin-top:auto;padding:8px 8px 12px;border-top:1px solid var(--bdr);display:flex;flex-direction:column;gap:3px;}
-.fb{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:var(--r8);cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);background:none;border:1px solid transparent;width:100%;text-align:left;transition:all var(--t);}
+.sb-foot{margin-top:auto;padding:8px 8px 12px;border-top:1px solid var(--bdr);display:flex;flex-direction:column;gap:2px;}
+.fb{display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:var(--r8);cursor:pointer;font-size:.77rem;font-weight:600;color:var(--muted);background:none;border:1px solid transparent;width:100%;text-align:left;transition:all var(--t);}
 .fb:hover{background:var(--surf2);border-color:var(--bdr);color:var(--txt);}
 .fb.gc:hover{border-color:var(--greenbdr);color:var(--green);background:var(--greendim);}
-/* ════════════════════ MAIN ════════════════════ */
+.fb.fb-sign-in{border-color:var(--acbdr);color:var(--actext);background:var(--acdim);}
+.fb.fb-sign-in:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+/* ══════════ MAIN ══════════ */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-.mhd{display:flex;align-items:center;padding:14px 22px;border-bottom:1px solid var(--bdr);gap:10px;flex-shrink:0;}
-.mhd h1{font-size:1.25rem;font-weight:800;letter-spacing:-.04em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.hactions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
-.mbody{flex:1;overflow-y:auto;padding:16px 22px;}
-/* ════════════════════ INPUTS ════════════════════ */
-.inp{width:100%;padding:8px 11px;background:var(--surf2);border:1px solid var(--bdr2);border-radius:var(--r8);color:var(--txt);font-size:.855rem;font-weight:500;transition:border-color var(--t);}
+.mhd{display:flex;align-items:center;padding:13px 22px;border-bottom:1px solid var(--bdr);gap:10px;flex-shrink:0;}
+.mhd h1{font-size:1.22rem;font-weight:800;letter-spacing:-.04em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hacts{display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.mbody{flex:1;overflow-y:auto;padding:15px 22px;}
+/* ══════════ INPUTS ══════════ */
+.inp{width:100%;padding:8px 11px;background:var(--surf2);border:1px solid var(--bdr2);border-radius:var(--r8);color:var(--txt);font-size:.845rem;font-weight:500;transition:border-color var(--t);}
 .inp:focus{outline:none;border-color:var(--bdr3);}
 .inp::placeholder{color:var(--subtle);}
-textarea.inp{resize:vertical;min-height:70px;line-height:1.55;}
-select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%236b6b72' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
-input[type="date"].inp,input[type="time"].inp{color-scheme:dark;}
-[data-theme="light"] input[type="date"].inp,[data-theme="light"] input[type="time"].inp{color-scheme:light;}
-.flabel{display:block;font-size:.68rem;font-weight:700;color:var(--muted);margin-bottom:4px;letter-spacing:.02em;}
-.field{width:100%;}
-.row2{display:flex;gap:9px;}
-.row2 .field{flex:1;}
-/* ════════════════════ BUTTONS ════════════════════ */
-.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:var(--r8);font-size:.82rem;font-weight:600;cursor:pointer;transition:all var(--t);border:1px solid transparent;white-space:nowrap;flex-shrink:0;}
-.btn-p{background:var(--accent);color:#0a1500;border-color:var(--accent);}
-.btn-p:hover{opacity:.82;}
-.btn-g{background:var(--surf2);color:var(--muted);border-color:var(--bdr2);}
-.btn-g:hover{border-color:var(--bdr3);color:var(--txt);}
-.btn-d{background:var(--reddim);color:var(--red);border-color:var(--redbdr);}
-.btn-d:hover{background:var(--red);color:#fff;}
-.btn-ai{background:linear-gradient(135deg,var(--acdim),var(--purpledim));color:var(--actext);border-color:var(--acbdr);}
-.btn-ai:hover{border-color:var(--accent);}
-.btn-blue{background:var(--bluedim);color:var(--blue);border-color:var(--bluebdr);}
-.btn-blue:hover{background:var(--blue);color:#fff;}
-.btn-sm{padding:5px 11px;font-size:.77rem;}
-.btn-xs{padding:3px 8px;font-size:.71rem;}
-.ibt{width:32px;height:32px;border-radius:var(--r8);background:var(--surf2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all var(--t);flex-shrink:0;}
+textarea.inp{resize:vertical;min-height:68px;line-height:1.55;}
+select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%236b6b78' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+input[type="date"].inp,input[type="time"].inp{color-scheme:dark;}[data-theme="light"] input[type="date"].inp,[data-theme="light"] input[type="time"].inp{color-scheme:light;}
+.flbl{display:block;font-size:.67rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.row2{display:flex;gap:9px;}.row2 .field{flex:1;}.field{width:100%;}
+/* ══════════ BUTTONS ══════════ */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--r8);font-size:.815rem;font-weight:600;cursor:pointer;transition:all var(--t);border:1px solid transparent;white-space:nowrap;flex-shrink:0;}
+.btn-p{background:var(--accent);color:#fff;border-color:var(--accent);}.btn-p:hover{opacity:.82;}
+.btn-g{background:var(--surf2);color:var(--muted);border-color:var(--bdr2);}.btn-g:hover{border-color:var(--bdr3);color:var(--txt);}
+.btn-d{background:var(--reddim);color:var(--red);border-color:var(--redbdr);}.btn-d:hover{background:var(--red);color:#fff;}
+.btn-ai{background:linear-gradient(135deg,var(--acdim),var(--purpledim));color:var(--actext);border-color:var(--acbdr);}.btn-ai:hover{border-color:var(--accent);}
+.btn-sm{padding:5px 11px;font-size:.77rem;}.btn-xs{padding:3px 8px;font-size:.7rem;}
+.ibt{width:30px;height:30px;border-radius:var(--r8);background:var(--surf2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all var(--t);flex-shrink:0;}
 .ibt:hover{border-color:var(--bdr2);color:var(--txt);}
-.ibt.on{background:var(--acdim);border-color:var(--acbdr);color:var(--actext);}
-/* ════════════════════ CARDS/MISC ════════════════════ */
-.card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r12);}
-.badge{padding:2px 6px;border-radius:var(--r4);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;display:inline-flex;align-items:center;gap:3px;}
+/* ══════════ BADGES ══════════ */
+.badge{padding:2px 6px;border-radius:var(--r4);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;display:inline-flex;align-items:center;gap:3px;}
 .bdg-low{background:var(--greendim);color:var(--green);}
 .bdg-medium{background:var(--orangedim);color:var(--orange);}
 .bdg-high{background:var(--reddim);color:var(--red);}
-.bdg-date{background:var(--surf3);color:var(--muted);text-transform:none;font-size:.65rem;font-weight:500;}
+.bdg-date{background:var(--surf3);color:var(--muted);text-transform:none;font-size:.63rem;font-weight:500;}
 .bdg-date.overdue{background:var(--reddim);color:var(--red);}
-.bdg-date.today{background:var(--bluedim);color:var(--blue);}
+.bdg-date.today{background:var(--acdim);color:var(--actext);}
 .bdg-date.soon{background:var(--orangedim);color:var(--orange);}
-.bdg-list{font-size:.62rem;font-weight:700;}
-.spinner{width:14px;height:14px;border:2px solid var(--bdr2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;display:inline-block;flex-shrink:0;}
+.spinner{width:13px;height:13px;border:2px solid var(--bdr2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;display:inline-block;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.divider{border:none;border-top:1px solid var(--bdr);margin:6px 0;}
-/* ════════════════════ ADD-TASK ════════════════════ */
-.add-box{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r12);padding:12px;margin-bottom:12px;}
-.add-row{display:flex;gap:8px;margin-bottom:8px;}
-.add-meta{display:flex;gap:8px;flex-wrap:wrap;}
-/* ════════════════════ AI CHIPS ════════════════════ */
-.ai-bar{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
-.ai-chip{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:var(--r50);background:var(--surf);border:1px solid var(--bdr);font-size:.74rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all var(--t);}
+@keyframes fuad{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.divider{border:none;border-top:1px solid var(--bdr);margin:5px 0;}
+/* ══════════ ADD BOX ══════════ */
+.add-box{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r12);padding:11px;margin-bottom:11px;}
+.add-row{display:flex;gap:7px;margin-bottom:7px;}
+.add-meta{display:flex;gap:7px;flex-wrap:wrap;}
+/* ══════════ AI BAR ══════════ */
+.ai-bar{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap;}
+.ai-chip{display:flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;background:var(--surf);border:1px solid var(--bdr);font-size:.73rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all var(--t);}
 .ai-chip:hover{border-color:var(--acbdr);color:var(--actext);background:var(--acdim);}
-/* ════════════════════ AI PLAN ════════════════════ */
-.plan-card{background:var(--surf2);border:1px solid var(--acbdr);border-radius:var(--r12);padding:12px 14px;margin-bottom:12px;display:none;animation:fuad .25s var(--ease);}
-@keyframes fuad{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
-.plan-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.plan-lbl{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--actext);display:flex;align-items:center;gap:5px;}
-.plan-body{font-size:.835rem;line-height:1.7;color:var(--muted);white-space:pre-wrap;max-height:240px;overflow-y:auto;}
-/* ════════════════════ PROGRESS ════════════════════ */
-.prog-row{display:flex;align-items:center;gap:9px;padding:8px 11px;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r8);margin-bottom:10px;}
+/* ══════════ PLAN CARD ══════════ */
+.plan-card{background:var(--surf2);border:1px solid var(--acbdr);border-radius:var(--r12);padding:11px 13px;margin-bottom:11px;display:none;animation:fuad .25s var(--ease);}
+.plan-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+.plan-lbl{font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--actext);display:flex;align-items:center;gap:5px;}
+.plan-body{font-size:.83rem;line-height:1.7;color:var(--muted);white-space:pre-wrap;max-height:230px;overflow-y:auto;}
+/* ══════════ PROGRESS ══════════ */
+.prog-row{display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r8);margin-bottom:9px;}
 .prog-track{flex:1;height:3px;background:var(--surf3);border-radius:3px;overflow:hidden;}
 .prog-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .5s var(--ease);}
-.prog-txt{font-size:.69rem;font-weight:700;color:var(--muted);white-space:nowrap;}
-/* ════════════════════ TASK CARDS ════════════════════ */
+.prog-txt{font-size:.67rem;font-weight:700;color:var(--muted);white-space:nowrap;}
+/* ══════════ TASK CARDS ══════════ */
 .tasks-list{display:flex;flex-direction:column;gap:4px;}
-.tc{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r12);transition:border-color var(--t),box-shadow var(--t);animation:fuad .2s var(--ease);}
+.tc{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r12);transition:border-color var(--t);animation:fuad .18s var(--ease);}
 .tc:hover{border-color:var(--bdr2);}
-.tc.overdue{border-left:2px solid var(--red);}
-.tc.soon{border-left:2px solid var(--orange);}
-.tc.done{opacity:.38;}
-.chk{appearance:none;width:16px;height:16px;border:1.5px solid var(--bdr3);border-radius:4px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all var(--t);}
+.tc.t-overdue{border-left:2px solid var(--red);}
+.tc.t-soon{border-left:2px solid var(--orange);}
+.tc.t-done{opacity:.37;}
+.chk{appearance:none;width:15px;height:15px;border:1.5px solid var(--bdr3);border-radius:4px;cursor:pointer;flex-shrink:0;margin-top:2px;transition:all var(--t);}
 .chk:checked{background:var(--accent);border-color:var(--accent);}
-.chk:checked::after{content:"✓";color:#0a1500;font-size:9px;font-weight:900;}
+.chk:checked::after{content:"✓";color:#fff;font-size:8px;font-weight:900;display:block;text-align:center;line-height:13px;}
 .tc-body{flex:1;min-width:0;}
-.tc-title{font-size:.855rem;font-weight:600;line-height:1.4;margin-bottom:4px;}
-.tc.done .tc-title{text-decoration:line-through;color:var(--muted);}
+.tc-title{font-size:.845rem;font-weight:600;line-height:1.4;margin-bottom:4px;}
+.tc.t-done .tc-title{text-decoration:line-through;color:var(--muted);}
 .tc-meta{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
 .tc-acts{display:flex;align-items:center;gap:2px;opacity:0;transition:opacity var(--t);flex-shrink:0;}
 .tc:hover .tc-acts{opacity:1;}
-.ta{width:24px;height:24px;border-radius:5px;background:none;border:none;color:var(--subtle);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t);}
+.ta{width:23px;height:23px;border-radius:5px;background:none;border:none;color:var(--subtle);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t);}
 .ta:hover{background:var(--surf2);color:var(--muted);}
 .ta.del:hover{color:var(--red);background:var(--reddim);}
-.ta.hl-on:hover{color:var(--orange);background:var(--orangedim);}
-.ta.hl-off{color:var(--orange);}
-/* ════════════════════ EMPTY ════════════════════ */
-.empty{text-align:center;padding:44px 20px;color:var(--subtle);}
-.empty .em{font-size:2rem;margin-bottom:10px;}
-.empty h3{font-size:.9rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
-.empty p{font-size:.78rem;}
-/* ════════════════════ HOTLIST HINT ════════════════════ */
-.hl-hint{padding:9px 13px;background:var(--orangedim);border:1px solid var(--orangebdr);border-radius:var(--r8);font-size:.78rem;color:var(--orange);display:flex;align-items:center;gap:7px;margin-bottom:10px;}
-/* ════════════════════ STREAKS ════════════════════ */
-.streak-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:14px;}
-.streak-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r12);padding:14px;transition:border-color var(--t);cursor:pointer;}
-.streak-card:hover{border-color:var(--bdr2);}
-.streak-card.done-today{border-color:var(--acbdr);}
-.sc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
-.sc-icon{font-size:1.6rem;line-height:1;}
-.sc-acts{display:flex;gap:4px;opacity:0;transition:opacity var(--t);}
-.streak-card:hover .sc-acts{opacity:1;}
-.sc-name{font-size:.9rem;font-weight:700;margin-bottom:2px;}
-.sc-desc{font-size:.74rem;color:var(--muted);}
-.sc-stats{display:flex;gap:12px;margin-bottom:10px;}
-.sc-stat{text-align:center;}
-.sc-stat-val{font-size:1.3rem;font-weight:800;letter-spacing:-.05em;line-height:1;}
-.sc-stat-lbl{font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
-.sc-xp{font-size:.7rem;font-weight:600;color:var(--gold);background:var(--golddim);border:1px solid var(--goldbdr);padding:2px 7px;border-radius:var(--r50);display:inline-flex;align-items:center;gap:3px;margin-bottom:9px;}
-.sc-dots{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:10px;}
-.sc-dot{width:9px;height:9px;border-radius:2px;background:var(--surf3);}
-.sc-dot.done{background:var(--accent);}
-.sc-dot.today-empty{border:1px solid var(--acbdr);}
-.sc-btn{width:100%;justify-content:center;font-size:.8rem;}
-/* ════════════════════ XP TOAST ════════════════════ */
-#xpToast{position:fixed;bottom:22px;right:22px;background:var(--golddim);border:1px solid var(--goldbdr);color:var(--gold);padding:10px 16px;border-radius:var(--r12);font-size:.82rem;font-weight:700;display:none;align-items:center;gap:7px;z-index:9999;animation:fuad .25s var(--ease);}
-/* ════════════════════ TIMETABLE ════════════════════ */
-.tt-upload{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;border:2px dashed var(--bdr2);border-radius:var(--r16);text-align:center;cursor:pointer;transition:all var(--t);}
+/* ══════════ EMPTY ══════════ */
+.empty{text-align:center;padding:42px 20px;color:var(--subtle);}
+.empty .em{font-size:1.9rem;margin-bottom:9px;}
+.empty h3{font-size:.88rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.empty p{font-size:.77rem;}
+/* ══════════ STREAKS ══════════ */
+.streak-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:9px;margin-bottom:12px;}
+.sc{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r12);padding:13px;transition:border-color var(--t);}
+.sc:hover{border-color:var(--bdr2);}
+.sc.checked{border-color:var(--acbdr);}
+.sc.paused-card{border-color:var(--orangebdr);opacity:.75;}
+.sc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.sc-icon{font-size:1.5rem;line-height:1;}
+.sc-acts{display:flex;gap:3px;opacity:0;transition:opacity var(--t);}
+.sc:hover .sc-acts{opacity:1;}
+.sc-name{font-size:.88rem;font-weight:700;margin-bottom:1px;}
+.sc-desc{font-size:.72rem;color:var(--muted);margin-bottom:8px;}
+.sc-stats{display:flex;gap:10px;margin-bottom:8px;}
+.ss-val{font-size:1.25rem;font-weight:800;letter-spacing:-.05em;line-height:1;}
+.ss-lbl{font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+.sc-target{font-size:.69rem;color:var(--muted);margin-bottom:6px;}
+.sc-target-fill{height:3px;background:var(--surf3);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.sc-target-bar{height:100%;background:var(--accent);border-radius:3px;transition:width .5s var(--ease);}
+.sc-dots{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:9px;}
+.sd{width:8px;height:8px;border-radius:2px;background:var(--surf3);}
+.sd.done{background:var(--accent);}
+.sd.today-empty{border:1px solid var(--acbdr);}
+.sc-xp-lbl{display:inline-flex;align-items:center;gap:3px;font-size:.67rem;font-weight:700;color:var(--gold);background:var(--golddim);border:1px solid var(--goldbdr);padding:2px 7px;border-radius:20px;margin-bottom:8px;}
+.pause-row{font-size:.71rem;color:var(--orange);background:var(--orangedim);border:1px solid var(--orangebdr);padding:4px 8px;border-radius:var(--r4);margin-bottom:7px;}
+/* ══════════ LEVEL UP ══════════ */
+#luOverlay{position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,0.88);display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+#luOverlay.show{display:flex;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.lu-card{background:var(--surf);border:1px solid var(--acbdr);border-radius:var(--r24);padding:36px 28px;text-align:center;max-width:320px;width:100%;position:relative;overflow:hidden;animation:luPop .55s cubic-bezier(.34,1.56,.64,1);}
+@keyframes luPop{from{transform:scale(.4) rotate(-8deg);opacity:0;}to{transform:scale(1) rotate(0);opacity:1;}}
+.lu-bg-glow{position:absolute;inset:-30px;background:radial-gradient(circle,var(--acdim) 0%,transparent 70%);pointer-events:none;}
+.lu-icon{font-size:3.5rem;margin-bottom:14px;animation:luBounce 1.2s ease infinite;}
+@keyframes luBounce{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-12px) scale(1.1);}}
+.lu-h1{font-size:1.8rem;font-weight:900;letter-spacing:-.06em;margin-bottom:4px;color:var(--actext);}
+.lu-level{font-size:3rem;font-weight:900;letter-spacing:-.07em;color:var(--gold);margin-bottom:4px;}
+.lu-msg{font-size:.84rem;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+.lu-stars{font-size:1.4rem;letter-spacing:.2em;margin-bottom:18px;}
+/* ══════════ TIMETABLE ══════════ */
+.tt-upload{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 18px;border:2px dashed var(--bdr2);border-radius:var(--r16);text-align:center;cursor:pointer;transition:all var(--t);margin-bottom:12px;}
 .tt-upload:hover{border-color:var(--acbdr);background:var(--acdim);}
-.tt-up-icon{font-size:2.2rem;margin-bottom:9px;}
-.tt-days-grid{display:flex;flex-direction:column;gap:7px;}
+.tt-days-wrap{display:flex;flex-direction:column;gap:6px;}
 .tt-day{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r12);overflow:hidden;}
-.tt-day-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 13px;background:var(--surf2);border-bottom:1px solid var(--bdr);font-size:.77rem;font-weight:700;}
-.tt-now-tag{background:var(--acdim);color:var(--actext);border:1px solid var(--acbdr);padding:2px 7px;border-radius:var(--r50);font-size:.59rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
-.tt-ev{display:flex;align-items:center;gap:11px;padding:8px 13px;border-bottom:1px solid var(--bdr);font-size:.825rem;transition:background var(--t);}
+.tt-day-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 13px;background:var(--surf2);border-bottom:1px solid var(--bdr);font-size:.76rem;font-weight:700;}
+.tt-today-tag{background:var(--acdim);color:var(--actext);border:1px solid var(--acbdr);padding:2px 7px;border-radius:20px;font-size:.57rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.tt-ev{display:flex;align-items:center;gap:10px;padding:8px 13px;border-bottom:1px solid var(--bdr);font-size:.82rem;transition:background var(--t);position:relative;}
 .tt-ev:last-child{border-bottom:none;}
-.tt-ev.now{background:var(--acdim);border-left:2px solid var(--accent);}
-.ev-time{font-size:.69rem;font-weight:700;color:var(--muted);min-width:86px;font-family:var(--mono);}
+.tt-ev.tt-now{background:var(--acdim);border-left:2px solid var(--accent);}
+.tt-ev.tt-past{opacity:.45;}
+.ev-time{font-size:.67rem;font-weight:700;color:var(--muted);min-width:88px;font-family:var(--mono);}
 .ev-name{font-weight:600;flex:1;}
-.ev-loc{font-size:.68rem;color:var(--muted);}
-/* ════════════════════ TIMER ════════════════════ */
-.timer-wrap{display:flex;flex-direction:column;align-items:center;padding:24px 18px;}
-.ring-wrap{position:relative;margin-bottom:18px;}
+.ev-loc{font-size:.66rem;color:var(--muted);}
+.ev-now-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:pulse 1.5s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.time-now-line{position:absolute;left:0;right:0;height:1px;background:var(--accent);opacity:.4;}
+/* ══════════ TIMER ══════════ */
+.timer-wrap{display:flex;flex-direction:column;align-items:center;padding:22px 18px;}
+.ring-wrap{position:relative;margin-bottom:16px;}
 .ring-svg{transform:rotate(-90deg);}
 .ring-bg{fill:none;stroke:var(--surf3);stroke-width:6;}
 .ring-fg{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .3s;}
 .timer-inner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
-.timer-digs{font-size:2.4rem;font-weight:900;letter-spacing:-.06em;font-variant-numeric:tabular-nums;}
-.timer-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
-.timer-task{font-size:.78rem;color:var(--muted);margin-bottom:14px;text-align:center;max-width:240px;}
-.presets{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-bottom:12px;}
-.preset{padding:4px 11px;border-radius:var(--r50);background:var(--surf2);border:1px solid var(--bdr);font-family:var(--font);font-size:.73rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all var(--t);}
+.t-digs{font-size:2.3rem;font-weight:900;letter-spacing:-.06em;font-variant-numeric:tabular-nums;}
+.t-lbl{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
+.presets{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-bottom:11px;}
+.preset{padding:4px 10px;border-radius:20px;background:var(--surf2);border:1px solid var(--bdr);font-family:var(--font);font-size:.72rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all var(--t);}
 .preset:hover{border-color:var(--acbdr);color:var(--actext);}
 .preset.on{background:var(--acdim);border-color:var(--acbdr);color:var(--actext);}
-.timer-ctrls{display:flex;gap:7px;align-items:center;margin-bottom:12px;}
-/* ════════════════════ PROJECTS ════════════════════ */
-.proj-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+/* ══════════ PROJECTS ══════════ */
+.proj-cards{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
 .proj-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r12);overflow:hidden;transition:border-color var(--t);}
 .proj-card:hover{border-color:var(--bdr2);}
-.proj-hd{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;}
-.proj-color-bar{width:3px;height:36px;border-radius:3px;flex-shrink:0;}
+.proj-hd{display:flex;align-items:center;gap:9px;padding:12px 13px;cursor:pointer;}
+.proj-bar{width:3px;height:34px;border-radius:3px;flex-shrink:0;}
 .proj-info{flex:1;min-width:0;}
-.proj-title{font-size:.9rem;font-weight:700;margin-bottom:2px;}
-.proj-desc{font-size:.73rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.proj-meta{display:flex;align-items:center;gap:7px;flex-shrink:0;}
-.proj-pct-ring{position:relative;flex-shrink:0;}
-.proj-body{padding:0 14px 13px;border-top:1px solid var(--bdr);display:none;}
+.proj-title{font-size:.875rem;font-weight:700;margin-bottom:2px;}
+.proj-desc{font-size:.71rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.proj-body{padding:0 13px 12px;border-top:1px solid var(--bdr);display:none;}
 .proj-body.open{display:block;}
-.proj-subtasks{display:flex;flex-direction:column;gap:3px;margin:10px 0;}
-.stc{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r8);font-size:.82rem;font-weight:500;}
-.stc.done-st .st-txt{text-decoration:line-through;color:var(--muted);}
+.stc{display:flex;align-items:center;gap:7px;padding:6px 9px;background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r8);font-size:.81rem;font-weight:500;margin-bottom:3px;}
+.stc.st-done .st-txt{text-decoration:line-through;color:var(--muted);}
 .st-txt{flex:1;}
-.st-del{background:none;border:none;color:var(--subtle);cursor:pointer;font-size:.8rem;transition:color var(--t);}
-.st-del:hover{color:var(--red);}
-.proj-add-row{display:flex;gap:7px;margin-top:8px;}
-/* ════════════════════ MODALS ════════════════════ */
-dialog{background:var(--surf);border:1px solid var(--bdr2);border-radius:var(--r16);padding:0;color:var(--txt);box-shadow:0 20px 50px -8px rgba(0,0,0,.6);max-width:440px;width:calc(100vw - 28px);}
-dialog::backdrop{background:rgba(0,0,0,.62);backdrop-filter:blur(4px);}
+/* ══════════ ANNOUNCEMENTS ══════════ */
+.ann-list{display:flex;flex-direction:column;gap:7px;}
+.ann-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r12);padding:12px 13px;transition:border-color var(--t);}
+.ann-card:hover{border-color:var(--bdr2);}
+.ann-head{display:flex;align-items:flex-start;justify-content:space-between;gap:9px;margin-bottom:6px;}
+.ann-course{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--actext);background:var(--acdim);border:1px solid var(--acbdr);padding:2px 7px;border-radius:20px;}
+.ann-date{font-size:.65rem;color:var(--muted);}
+.ann-body{font-size:.83rem;line-height:1.55;color:var(--muted);margin-bottom:8px;}
+/* ══════════ MODALS ══════════ */
+dialog{background:var(--surf);border:1px solid var(--bdr2);border-radius:var(--r16);padding:0;color:var(--txt);box-shadow:0 20px 60px -8px rgba(0,0,0,.65);max-width:440px;width:calc(100vw - 28px);}
+dialog::backdrop{background:rgba(0,0,0,.65);backdrop-filter:blur(5px);}
 dialog[open]{animation:fuad .2s var(--ease);}
-.mhd2{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--bdr);}
-.mtitle{font-size:.92rem;font-weight:700;letter-spacing:-.02em;}
+.mhd2{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-bottom:1px solid var(--bdr);}
+.mtitle{font-size:.9rem;font-weight:700;letter-spacing:-.02em;}
 .mclose{background:none;border:none;color:var(--muted);cursor:pointer;padding:3px;border-radius:5px;display:flex;align-items:center;justify-content:center;transition:color var(--t);}
 .mclose:hover{color:var(--txt);}
-.mbdy{padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
-.mft{padding:10px 16px;border-top:1px solid var(--bdr);display:flex;justify-content:flex-end;gap:7px;}
-/* ai result preview */
-.ai-res-box{background:var(--surf2);border:1px solid var(--acbdr);border-radius:var(--r8);padding:10px 12px;display:none;}
-.ai-res-box.show{display:block;animation:fuad .2s var(--ease);}
-/* ════════════════════ ONBOARDING ════════════════════ */
-#ob{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;}
-.ob-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r24);padding:28px 24px;max-width:440px;width:100%;text-align:center;}
-.ob-mark{width:42px;height:42px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
-.ob-title{font-size:1.55rem;font-weight:800;letter-spacing:-.05em;margin-bottom:4px;}
-.ob-sub{font-size:.84rem;color:var(--muted);margin-bottom:22px;line-height:1.55;}
-.mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;}
-.mc{padding:14px 11px;background:var(--surf2);border:2px solid var(--bdr);border-radius:var(--r12);cursor:pointer;transition:all var(--t);text-align:center;}
+.mbdy{padding:13px 15px;display:flex;flex-direction:column;gap:9px;}
+.mft{padding:9px 15px;border-top:1px solid var(--bdr);display:flex;justify-content:flex-end;gap:6px;}
+.ai-res-box{background:var(--surf2);border:1px solid var(--acbdr);border-radius:var(--r8);padding:9px 11px;display:none;}
+.ai-res-box.show{display:block;animation:fuad .18s var(--ease);}
+/* ══════════ ONBOARDING ══════════ */
+#ob{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;padding:18px;}
+.ob-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r24);padding:26px 22px;max-width:420px;width:100%;text-align:center;}
+.ob-mark{width:40px;height:40px;background:var(--accent);border-radius:11px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.ob-title{font-size:1.5rem;font-weight:900;letter-spacing:-.06em;margin-bottom:4px;}
+.ob-sub{font-size:.82rem;color:var(--muted);margin-bottom:20px;line-height:1.55;}
+.mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:18px;}
+.mc{padding:13px 10px;background:var(--surf2);border:2px solid var(--bdr);border-radius:var(--r12);cursor:pointer;transition:all var(--t);text-align:center;}
 .mc:hover{border-color:var(--bdr2);}
 .mc.sel{border-color:var(--accent);background:var(--acdim);}
-.mc-icon{font-size:1.7rem;margin-bottom:5px;}
-.mc-name{font-size:.82rem;font-weight:700;margin-bottom:2px;}
-.mc-desc{font-size:.71rem;color:var(--muted);}
-/* ════════════════════ IMPORT ════════════════════ */
-#importScreen{position:fixed;inset:0;background:var(--bg);z-index:999;display:none;align-items:center;justify-content:center;padding:20px;}
-.imp-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r24);padding:24px;max-width:400px;width:100%;}
-/* ════════════════════ COLORS ════════════════════ */
-.swatch{width:20px;height:20px;border-radius:50%;cursor:pointer;transition:transform .13s;border:2px solid transparent;flex-shrink:0;}
-.swatch:hover{transform:scale(1.2);}
-.swatch.on{border-color:var(--txt);}
+.mc-icon{font-size:1.65rem;margin-bottom:5px;}
+.mc-name{font-size:.8rem;font-weight:700;margin-bottom:2px;}
+.mc-desc{font-size:.69rem;color:var(--muted);}
+/* ══════════ IMPORT ══════════ */
+#importScreen{position:fixed;inset:0;background:var(--bg);z-index:999;display:none;align-items:center;justify-content:center;padding:18px;}
+.imp-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r24);padding:22px;max-width:390px;width:100%;}
+/* ══════════ TOAST ══════════ */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--surf2);border:1px solid var(--bdr2);color:var(--txt);padding:9px 14px;border-radius:var(--r12);font-size:.8rem;font-weight:600;display:none;align-items:center;gap:7px;z-index:9998;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+#toast.show{display:flex;animation:fuad .2s var(--ease);}
+#toast.xp{border-color:var(--goldbdr);color:var(--gold);}
+/* colour swatches */
+.sw{width:19px;height:19px;border-radius:50%;cursor:pointer;transition:transform .13s;border:2px solid transparent;flex-shrink:0;}
+.sw:hover{transform:scale(1.25);}
+.sw.on{border-color:var(--txt);}
 </style>
-<!-- ════════ ONBOARDING ════════ -->
+
+<!-- ══ LEVEL UP OVERLAY ══ -->
+<div id="luOverlay">
+  <div class="lu-card">
+    <div class="lu-bg-glow"></div>
+    <div class="lu-icon" id="luIcon">⚡</div>
+    <div class="lu-h1">Level Up!</div>
+    <div class="lu-level" id="luLevelNum">5</div>
+    <div class="lu-stars" id="luStars">⭐⭐⭐</div>
+    <div class="lu-msg" id="luMsg">You're levelling up fast. Keep going!</div>
+    <button class="btn btn-p" style="width:100%;justify-content:center;font-size:.9rem;" onclick="dismissLU()">Continue ⚡</button>
+  </div>
+</div>
+
+<!-- ══ ONBOARDING ══ -->
 <div id="ob">
   <div class="ob-card">
-    <div class="ob-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a1500" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+    <div class="ob-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
     <h1 class="ob-title">Welcome to Tempo</h1>
-    <p class="ob-sub">AI tasks · Timetable · Study sessions · Streaks · Projects</p>
-    <div style="margin-bottom:16px;">
-      <input id="ob-name" class="inp" placeholder="Your name…" style="text-align:center;">
-    </div>
-    <div class="mode-cards">
+    <p class="ob-sub">AI tasks · Timetables · Study sessions · Streaks · Projects</p>
+    <div style="margin-bottom:14px;"><input id="ob-name" class="inp" placeholder="Your name…" style="text-align:center;"></div>
+    <div class="mc-grid">
       <div class="mc sel" data-mode="normal" onclick="selMode('normal')"><div class="mc-icon">💼</div><div class="mc-name">Normal</div><div class="mc-desc">Tasks &amp; projects</div></div>
       <div class="mc" data-mode="student" onclick="selMode('student')"><div class="mc-icon">🎓</div><div class="mc-name">Student</div><div class="mc-desc">Classes &amp; timetable</div></div>
     </div>
-    <button class="btn btn-p" style="width:100%;justify-content:center;font-size:.9rem;" onclick="finishOB()">Get started →</button>
+    <button class="btn btn-p" style="width:100%;justify-content:center;font-size:.88rem;" onclick="finishOB()">Get started →</button>
   </div>
 </div>
 
-<!-- ════════ CLASSROOM IMPORT ════════ -->
+<!-- ══ CLASSROOM IMPORT ══ -->
 <div id="importScreen">
   <div class="imp-card">
     <div id="imp-form">
-      <div style="display:flex;align-items:center;gap:8px;font-size:.95rem;font-weight:700;color:var(--green);margin-bottom:6px;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6M8 11h8"/></svg>
+      <div style="display:flex;align-items:center;gap:7px;font-size:.92rem;font-weight:700;color:var(--green);margin-bottom:5px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6M8 11h8"/></svg>
         Import from Google Classroom
       </div>
-      <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;">Verify details then save to your board.</p>
-      <div class="field" style="margin-bottom:9px;"><label class="flabel">Task name</label><input id="imp-name" class="inp" required></div>
-      <div class="row2" style="margin-bottom:9px;">
-        <div class="field"><label class="flabel">Due date</label><input id="imp-date" type="date" class="inp"></div>
-        <div class="field"><label class="flabel">Priority</label><select id="imp-pri" class="inp"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></div>
+      <p style="font-size:.78rem;color:var(--muted);margin-bottom:13px;">Review and save to your board.</p>
+      <div class="field" style="margin-bottom:8px;"><label class="flbl">Task / announcement</label><input id="imp-name" class="inp"></div>
+      <div class="row2" style="margin-bottom:8px;">
+        <div class="field"><label class="flbl">Due date</label><input id="imp-date" type="date" class="inp"></div>
+        <div class="field"><label class="flbl">Priority</label><select id="imp-pri" class="inp"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></div>
       </div>
-      <div class="field" style="margin-bottom:14px;"><label class="flabel">Add to list</label><select id="imp-list" class="inp"></select></div>
+      <div class="field" style="margin-bottom:13px;"><label class="flbl">Add to list</label><select id="imp-list" class="inp"></select></div>
       <button class="btn btn-p" style="width:100%;justify-content:center;" onclick="saveImport()">Save to Tempo</button>
     </div>
-    <div id="imp-success" style="display:none;text-align:center;padding:18px 0;">
-      <div style="font-size:2.2rem;margin-bottom:10px;">✅</div>
-      <h2 style="font-size:1rem;font-weight:700;color:var(--green);margin-bottom:6px;">Saved!</h2>
-      <p style="font-size:.82rem;color:var(--muted);">Task added. You can close this tab.</p>
+    <div id="imp-success" style="display:none;text-align:center;padding:16px 0;">
+      <div style="font-size:2rem;margin-bottom:9px;">✅</div>
+      <h2 style="font-size:.95rem;font-weight:700;color:var(--green);margin-bottom:5px;">Saved!</h2>
+      <p style="font-size:.8rem;color:var(--muted);">You can close this tab.</p>
     </div>
   </div>
 </div>
 
-<!-- ════════ APP ════════ -->
+<!-- ══ APP ══ -->
 <div id="app" style="display:none;width:100%;height:100%;">
-
-  <!-- SIDEBAR -->
   <aside id="sidebar">
     <div class="sb-top">
       <div class="logo">
-        <div class="logo-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0a1500" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <div class="logo-mark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
         <span class="logo-name">Tempo</span>
       </div>
-      <div class="level-badge" id="levelBadge">⚡ Level 1</div>
-      <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div></div>
-      <div class="xp-info"><span id="xpLabel">0 XP</span><span id="xpNext">100 XP to Lv 2</span></div>
+      <div class="user-row">
+        <div class="avatar" id="sbAvatar">👤</div>
+        <span class="user-name" id="sbUserName">User</span>
+        <span class="mode-pill" id="sbModePill">Normal</span>
+      </div>
+      <div class="xp-section">
+        <div class="level-row">
+          <span class="level-badge" id="levelBadge">⚡ Level 1</span>
+          <span style="font-size:.67rem;color:var(--muted);" id="xpLabel">0 XP</span>
+        </div>
+        <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+        <div class="xp-nums"><span id="xpCur">0</span><span id="xpTo">100 to Lv 2</span></div>
+      </div>
     </div>
 
     <div class="sb-nav">
-      <span class="sb-section-lbl">Overview</span>
-      <div class="ni active" data-view="all" onclick="sv('all')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
-        All Tasks<span class="ni-count" id="cnt-all">0</span>
-      </div>
-      <div class="ni" data-view="hotlist" onclick="sv('hotlist')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        Hotlist<span class="ni-count" id="cnt-hotlist">0</span>
-      </div>
-      <div class="ni" id="nav-tt" style="display:none;" onclick="sv('timetable')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-        Timetable
-      </div>
-      <div class="ni" onclick="sv('study')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span id="study-lbl">Focus Session</span>
-      </div>
+      <span class="sbl">Overview</span>
+      <div class="ni active" data-view="all" onclick="sv('all')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>All Tasks<span class="nic" id="cnt-all">0</span></div>
+      <div class="ni" data-view="hotlist" onclick="sv('hotlist')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Hotlist<span class="nic" id="cnt-hotlist">0</span></div>
+      <div class="ni" data-view="announcements" id="nav-ann" style="display:none;" onclick="sv('announcements')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Announcements<span class="nic" id="cnt-ann">0</span></div>
+      <div class="ni" id="nav-tt" style="display:none;" onclick="sv('timetable')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Timetable</div>
+      <div class="ni" onclick="sv('study')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span id="study-lbl">Focus Session</span></div>
 
-      <span class="sb-section-lbl">Lists</span>
-      <div class="sb-lists" id="sbLists"></div>
-      <div style="padding:3px 8px 6px;">
-        <button class="btn btn-g btn-sm" style="width:100%;justify-content:center;font-size:.75rem;" onclick="openAddList()">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5v14"/></svg> New List
-        </button>
-      </div>
+      <span class="sbl">Lists</span>
+      <div id="sbLists"></div>
+      <div style="padding:2px 8px 5px;"><button class="btn btn-g btn-sm" style="width:100%;justify-content:center;font-size:.73rem;" onclick="openAddList()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5v14"/></svg>New List</button></div>
 
-      <span class="sb-section-lbl">Projects</span>
+      <span class="sbl">Projects</span>
       <div id="sbProjects"></div>
-      <div style="padding:3px 8px 6px;">
-        <button class="btn btn-g btn-sm" style="width:100%;justify-content:center;font-size:.75rem;" onclick="sv('projects')">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg> All Projects
-        </button>
-      </div>
+      <div style="padding:2px 8px 5px;"><button class="btn btn-g btn-sm" style="width:100%;justify-content:center;font-size:.73rem;" onclick="sv('projects')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>All Projects</button></div>
 
-      <span class="sb-section-lbl">Streaks</span>
+      <span class="sbl">Streaks</span>
       <div id="sbStreaks"></div>
-      <div style="padding:3px 8px 6px;">
-        <button class="btn btn-g btn-sm" style="width:100%;justify-content:center;font-size:.75rem;" onclick="sv('streaks')">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg> All Streaks
-        </button>
-      </div>
+      <div style="padding:2px 8px 5px;"><button class="btn btn-g btn-sm" style="width:100%;justify-content:center;font-size:.73rem;" onclick="sv('streaks')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>All Streaks</button></div>
     </div>
 
-    <div class="sb-footer">
-      <button class="fb gc" onclick="openClassroomModal()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6M8 11h8"/></svg>
-        Connect Classroom
-      </button>
-      <button class="fb" onclick="openSettings()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-        Settings
-      </button>
-      <button class="fb" onclick="toggleTheme()">
-        <svg id="th-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-        <span id="th-lbl">Light Mode</span>
-      </button>
+    <div class="sb-foot">
+      <button class="fb gc" onclick="openGCModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6M8 11h8"/></svg>Connect Classroom</button>
+      <button class="fb fb-sign-in" id="fbSignInBtn" onclick="googleSignIn()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/></svg><span id="fbSignInLbl">Sign in with Google</span></button>
+      <button class="fb" onclick="openSettings()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>Settings</button>
+      <button class="fb" onclick="toggleTheme()"><svg id="th-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><span id="th-lbl">Light Mode</span></button>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main id="main">
-    <div class="mhd">
-      <h1 id="main-title">All Tasks</h1>
-      <div class="hactions" id="hactions"></div>
-    </div>
+    <div class="mhd"><h1 id="main-title">All Tasks</h1><div class="hacts" id="hacts"></div></div>
     <div class="mbody" id="mbody"></div>
   </main>
 </div>
 
-<!-- XP Toast -->
-<div id="xpToast">⚡ <span id="xpToastMsg">+10 XP</span></div>
+<!-- Toast -->
+<div id="toast">⚡ <span id="toastMsg">+10 XP</span></div>
 
-<!-- ════════ MODALS ════════ -->
-
+<!-- ══ MODALS ══ -->
 <!-- Edit Task -->
 <dialog id="editModal">
-  <div class="mhd2"><span class="mtitle">Edit Task</span><button class="mclose" onclick="$('editModal').close()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div class="mhd2"><span class="mtitle">Edit Task</span><button class="mclose" onclick="M('editModal').close()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
   <div class="mbdy">
     <input type="hidden" id="ed-id">
-    <div class="field"><label class="flabel">Task name</label><input id="ed-txt" class="inp"></div>
+    <div class="field"><label class="flbl">Task name</label><input id="ed-txt" class="inp"></div>
     <div class="row2">
-      <div class="field"><label class="flabel">Due date</label><input id="ed-date" type="date" class="inp"></div>
-      <div class="field"><label class="flabel">Priority</label><select id="ed-pri" class="inp"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
+      <div class="field"><label class="flbl">Due date</label><input id="ed-date" type="date" class="inp"></div>
+      <div class="field"><label class="flbl">Priority</label><select id="ed-pri" class="inp"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
     </div>
-    <div class="field"><label class="flabel">List</label><select id="ed-list" class="inp"></select></div>
+    <div class="field"><label class="flbl">List</label><select id="ed-list" class="inp"></select></div>
   </div>
-  <div class="mft"><button class="btn btn-g btn-sm" onclick="$('editModal').close()">Cancel</button><button class="btn btn-p btn-sm" onclick="saveEdit()">Save</button></div>
+  <div class="mft"><button class="btn btn-g btn-sm" onclick="M('editModal').close()">Cancel</button><button class="btn btn-p btn-sm" onclick="saveEdit()">Save</button></div>
 </dialog>
-
 <!-- AI Task -->
 <dialog id="aiTaskModal">
-  <div class="mhd2"><span class="mtitle">✨ AI Task Creator</span><button class="mclose" onclick="$('aiTaskModal').close()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div class="mhd2"><span class="mtitle">✨ AI Task Creator</span><button class="mclose" onclick="M('aiTaskModal').close()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
   <div class="mbdy">
-    <p style="font-size:.8rem;color:var(--muted);">Describe what you need to do — AI structures it for you.</p>
-    <div class="field"><label class="flabel">Describe your task</label><textarea id="ait-input" class="inp" placeholder="e.g. I need to finish the history essay about WW2 by Friday, it's really important…"></textarea></div>
-    <div class="field"><label class="flabel">Add to list</label><select id="ait-list" class="inp"></select></div>
+    <p style="font-size:.79rem;color:var(--muted);">Describe what you need to do — AI structures it for you.</p>
+    <div class="field"><label class="flbl">Describe your task</label><textarea id="ait-inp" class="inp" placeholder="e.g. I need to finish the history essay about WW2 by Friday…"></textarea></div>
+    <div class="field"><label class="flbl">Add to list</label><select id="ait-list" class="inp"></select></div>
     <div class="ai-res-box" id="ai-res-box">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
-        <span id="ai-res-title" style="font-size:.88rem;font-weight:700;">—</span>
-        <span class="badge" id="ai-res-pri">low</span>
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;">
-        <span class="badge bdg-date" id="ai-res-date" style="display:none;"></span>
-        <span style="font-size:.75rem;color:var(--muted);" id="ai-res-notes"></span>
-      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><span id="ai-res-title" style="font-size:.86rem;font-weight:700;">—</span><span class="badge" id="ai-res-pri">low</span></div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;"><span class="badge bdg-date" id="ai-res-date" style="display:none;"></span><span style="font-size:.73rem;color:var(--muted);" id="ai-res-notes"></span></div>
     </div>
-    <div id="ait-status" style="display:none;"><div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted);font-style:italic;"><div class="spinner"></div>Generating…</div></div>
+    <div id="ait-status" style="display:none;"><div style="display:flex;align-items:center;gap:7px;font-size:.8rem;color:var(--muted);font-style:italic;"><div class="spinner"></div>Generating with Groq…</div></div>
   </div>
-  <div class="mft">
-    <button class="btn btn-g btn-sm" onclick="$('aiTaskModal').close()">Cancel</button>
-    <button class="btn btn-ai btn-sm" id="ait-gen-btn" onclick="aiGenTask()">✨ Generate</button>
-    <button class="btn btn-p btn-sm" id="ait-add-btn" style="display:none;" onclick="aiAddTask()">Add Task</button>
-  </div>
+  <div class="mft"><button class="btn btn-g btn-sm" onclick="M('aiTaskModal').close()">Cancel</button><button class="btn btn-ai btn-sm" id="ait-gen-btn" onclick="aiGenTask()">✨ Generate</button><button class="btn btn-p btn-sm" id="ait-add-btn" style="display:none;" onclick="aiAddTask()">Add Task</button></div>
 </dialog>
-
 <!-- AI Plan -->
-<dialog id="aiPlanModal" style="max-width:490px;">
-  <div class="mhd2"><span class="mtitle">🧠 AI Action Plan</span><button class="mclose" onclick="$('aiPlanModal').close()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+<dialog id="planModal" style="max-width:480px;">
+  <div class="mhd2"><span class="mtitle">🧠 AI Action Plan</span><button class="mclose" onclick="M('planModal').close()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
   <div class="mbdy">
-    <p style="font-size:.8rem;color:var(--muted);">AI will create a timed plan from your active tasks.</p>
-    <div class="row2">
-      <div class="field"><label class="flabel">Start</label><input id="pl-start" type="time" value="09:00" class="inp"></div>
-      <div class="field"><label class="flabel">End</label><input id="pl-end" type="time" value="17:00" class="inp"></div>
-    </div>
-    <div class="field"><label class="flabel">Fixed events / breaks</label><input id="pl-breaks" class="inp" placeholder="e.g. lunch 12:30–1pm, meeting 3pm"></div>
-    <div class="field"><label class="flabel">Extra context</label><textarea id="pl-ctx" class="inp" style="min-height:58px;" placeholder="Energy level, preferences, deadlines…"></textarea></div>
+    <p style="font-size:.79rem;color:var(--muted);">AI builds a timed plan from your active tasks.</p>
+    <div class="row2"><div class="field"><label class="flbl">Start</label><input id="pl-s" type="time" value="09:00" class="inp"></div><div class="field"><label class="flbl">End</label><input id="pl-e" type="time" value="17:00" class="inp"></div></div>
+    <div class="field"><label class="flbl">Fixed events / breaks</label><input id="pl-brk" class="inp" placeholder="e.g. lunch 12:30–1pm, meeting 3pm"></div>
+    <div class="field"><label class="flbl">Extra context</label><textarea id="pl-ctx" class="inp" style="min-height:56px;" placeholder="Energy level, travel, notes…"></textarea></div>
   </div>
-  <div class="mft"><button class="btn btn-g btn-sm" onclick="$('aiPlanModal').close()">Cancel</button><button class="btn btn-ai btn-sm" onclick="aiGenPlan()">🧠 Generate Plan</button></div>
+  <div class="mft"><button class="btn btn-g btn-sm" onclick="M('planModal').close()">Cancel</button><button class="btn btn-ai btn-sm" onclick="aiGenPlan()">🧠 Generate</button></div>
 </dialog>
-
 <!-- Add List -->
-<dialog id="addListModal">
-  <div class="mhd2"><span class="mtitle">New List</span><button class="mclose" onclick="$('addListModal').close()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+<dialog id="listModal">
+  <div class="mhd2"><span class="mtitle">New List</span><button class="mclose" onclick="M('listModal').close()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
   <div class="mbdy">
-    <div class="field"><label class="flabel">Name</label><input id="nl-name" class="inp" placeholder="e.g. Work, School, Personal…"></div>
-    <div class="field"><label class="flabel">Colour</label><div id="nl-swatches" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;"></div></div>
+    <div class="field"><label class="flbl">Name</label><input id="nl-name" class="inp" placeholder="e.g. Work, School, Personal…"></div>
+    <div class="field"><label class="flbl">Colour</label><div id="nl-sw" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;"></div></div>
   </div>
-  <div class="mft"><button class="btn btn-g btn-sm" onclick="$('addListModal').close()">Cancel</button><button class="btn btn-p btn-sm" onclick="createList()">Create</button></div>
+  <div class="mft"><button class="btn btn-g btn-sm" onclick="M('listModal').close()">Cancel</button><button class="btn btn-p btn-sm" onclick="createList()">Create</button></div>
 </dialog>
-
 <!-- New Project -->
-<dialog id="newProjModal" style="max-width:480px;">
-  <div class="mhd2"><span class="mtitle">New Project</span><button class="mclose" onclick="$('newProjModal').close()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+<dialog id="projModal" style="max-width:470px;">
+  <div class="mhd2"><span class="mtitle">New Project</span><button class="mclose" onclick="M('projModal').close()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
   <div class="mbdy">
-    <div class="field"><label class="flabel">Project name</label><input id="np-name" class="inp" placeholder="e.g. Build portfolio website…"></div>
-    <div class="field"><label class="flabel">Description (optional)</label><textarea id="np-desc" class="inp" style="min-height:58px;" placeholder="What is this project about?"></textarea></div>
+    <div class="field"><label class="flbl">Project name</label><input id="np-name" class="inp" placeholder="e.g. Build portfolio…"></div>
+    <div class="field"><label class="flbl">Description</label><textarea id="np-desc" class="inp" style="min-height:56px;" placeholder="What is this project about?"></textarea></div>
     <div class="row2">
-      <div class="field"><label class="flabel">Due date</label><input id="np-date" type="date" class="inp"></div>
-      <div class="field"><label class="flabel">Colour</label><div id="np-swatches" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;"></div></div>
+      <div class="field"><label class="flbl">Due date</label><input id="np-date" type="date" class="inp"></div>
+      <div class="field"><label class="flbl">Colour</label><div id="np-sw" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;"></div></div>
     </div>
-    <button class="btn btn-ai btn-sm" onclick="aiGenSubtasks()" style="width:100%;justify-content:center;">✨ AI Generate Subtasks</button>
-    <div id="np-ai-status" style="display:none;"><div style="display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted);font-style:italic;"><div class="spinner"></div>Generating subtasks with Mistral…</div></div>
-    <div id="np-subtask-preview" style="display:flex;flex-direction:column;gap:4px;"></div>
+    <button class="btn btn-ai btn-sm" style="width:100%;justify-content:center;" onclick="aiGenSubtasks()">✨ AI Generate Subtasks (Mistral)</button>
+    <div id="np-ai-st" style="display:none;"><div style="display:flex;align-items:center;gap:7px;font-size:.79rem;color:var(--muted);font-style:italic;"><div class="spinner"></div>Generating with Mistral…</div></div>
+    <div id="np-st-preview" style="display:flex;flex-direction:column;gap:3px;"></div>
   </div>
-  <div class="mft"><button class="btn btn-g btn-sm" onclick="$('newProjModal').close()">Cancel</button><button class="btn btn-p btn-sm" onclick="createProject()">Create Project</button></div>
+  <div class="mft"><button class="btn btn-g btn-sm" onclick="M('projModal').close()">Cancel</button><button class="btn btn-p btn-sm" onclick="createProject()">Create Project</button></div>
 </dialog>
-
 <!-- New Streak -->
-<dialog id="newStreakModal">
-  <div class="mhd2"><span class="mtitle">New Streak</span><button class="mclose" onclick="$('newStreakModal').close()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+<dialog id="streakModal">
+  <div class="mhd2"><span class="mtitle">New Streak</span><button class="mclose" onclick="M('streakModal').close()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
   <div class="mbdy">
-    <div class="field"><label class="flabel">Name</label><input id="ns-name" class="inp" placeholder="e.g. Morning Run, Language Practice…"></div>
-    <div class="field"><label class="flabel">Description</label><input id="ns-desc" class="inp" placeholder="e.g. Run 30 min every morning"></div>
-    <div class="field"><label class="flabel">Icon (emoji)</label><input id="ns-icon" class="inp" placeholder="🔥" maxlength="2" style="font-size:1.3rem;text-align:center;width:70px;"></div>
-    <div class="field"><label class="flabel">XP per check-in</label><input id="ns-xp" type="number" class="inp" value="15" min="1" max="100"></div>
+    <div class="field"><label class="flbl">Name</label><input id="ns-name" class="inp" placeholder="e.g. Morning Run, Language Practice…"></div>
+    <div class="field"><label class="flbl">Description</label><input id="ns-desc" class="inp" placeholder="e.g. Run 30 min every morning"></div>
+    <div class="row2">
+      <div class="field"><label class="flbl">Icon (emoji)</label><input id="ns-icon" class="inp" placeholder="🔥" maxlength="2" style="font-size:1.2rem;text-align:center;"></div>
+      <div class="field"><label class="flbl">Target days</label><input id="ns-target" type="number" class="inp" value="30" min="1" max="365"></div>
+    </div>
   </div>
-  <div class="mft"><button class="btn btn-g btn-sm" onclick="$('newStreakModal').close()">Cancel</button><button class="btn btn-p btn-sm" onclick="createStreak()">Create</button></div>
+  <div class="mft"><button class="btn btn-g btn-sm" onclick="M('streakModal').close()">Cancel</button><button class="btn btn-p btn-sm" onclick="createStreak()">Create</button></div>
 </dialog>
-
-<!-- Settings -->
-<dialog id="settingsModal">
-  <div class="mhd2"><span class="mtitle">Settings</span><button class="mclose" onclick="$('settingsModal').close()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+<!-- Pause Streak -->
+<dialog id="pauseModal">
+  <div class="mhd2"><span class="mtitle">Pause Streak</span><button class="mclose" onclick="M('pauseModal').close()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
   <div class="mbdy">
-    <div class="field"><label class="flabel">Your name</label><input id="set-name" class="inp"></div>
-    <div class="field"><label class="flabel">Mode</label><select id="set-mode" class="inp"><option value="normal">Normal</option><option value="student">Student</option></select></div>
+    <p style="font-size:.8rem;color:var(--muted);">Pausing skips today's check-in without breaking your streak. You can pause once per 7 days.</p>
+    <input type="hidden" id="pause-id">
+    <div class="field"><label class="flbl">Reason</label><input id="pause-reason" class="inp" placeholder="e.g. Travelling, sick day…"></div>
+  </div>
+  <div class="mft"><button class="btn btn-g btn-sm" onclick="M('pauseModal').close()">Cancel</button><button class="btn btn-ai btn-sm" onclick="confirmPause()">Pause for today</button></div>
+</dialog>
+<!-- Settings -->
+<dialog id="settingsModal" style="max-width:460px;">
+  <div class="mhd2"><span class="mtitle">Settings</span><button class="mclose" onclick="M('settingsModal').close()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div class="mbdy">
+    <div class="row2">
+      <div class="field"><label class="flbl">Your name</label><input id="set-name" class="inp"></div>
+      <div class="field"><label class="flbl">Mode</label><select id="set-mode" class="inp"><option value="normal">Normal</option><option value="student">Student</option></select></div>
+    </div>
     <hr class="divider">
-    <div class="field"><label class="flabel">AI Backend URL (Deno Deploy)</label><input id="set-be" class="inp" placeholder="https://focus.simplifiedtest10.deno.net/"></div>
-    <p style="font-size:.71rem;color:var(--muted);margin-top:-4px;">Deploy <code style="font-size:.68rem;background:var(--surf3);padding:1px 4px;border-radius:3px;">deno-backend.ts</code> to <a href="https://console.deno.com/simplifiedtest10/focus" target="_blank" style="color:var(--blue);">console.deno.com/simplifiedtest10/focus</a></p>
+    <div class="field"><label class="flbl">AI Backend URL</label><input id="set-be" class="inp" placeholder="https://focus.simplifiedtest10.deno.net"></div>
+    <p style="font-size:.69rem;color:var(--muted);margin-top:-4px;">Deploy <code style="background:var(--surf3);padding:1px 4px;border-radius:3px;font-size:.66rem;">deno-backend.ts</code> to <a href="https://console.deno.com/simplifiedtest10/focus" target="_blank" style="color:var(--actext);">console.deno.com/simplifiedtest10/focus</a></p>
     <hr class="divider">
-    <div class="field"><label class="flabel">Google Apps Script URL (Classroom)</label><input id="set-gc" class="inp" placeholder="https://script.google.com/macros/s/…/exec"></div>
-    <p style="font-size:.71rem;color:var(--muted);margin-top:-4px;">Your own Google Apps Script deployment for Classroom import.</p>
+    <div class="field"><label class="flbl">Google Apps Script URL (Classroom)</label><input id="set-gc" class="inp" placeholder="https://script.google.com/macros/s/…/exec"></div>
+    <p style="font-size:.69rem;color:var(--muted);margin-top:-4px;">Paste your deployment URL from <code style="background:var(--surf3);padding:1px 4px;border-radius:3px;font-size:.66rem;">classroom-connector.gs</code></p>
+    <hr class="divider">
+    <p style="font-size:.76rem;font-weight:700;color:var(--txt);">Firebase (optional — sync across devices)</p>
+    <div class="field"><label class="flbl">Firebase Config JSON</label><textarea id="set-fb" class="inp" style="min-height:72px;font-family:var(--mono);font-size:.73rem;" placeholder='{"apiKey":"...","authDomain":"...","projectId":"..."}'></textarea></div>
+    <p style="font-size:.69rem;color:var(--muted);margin-top:-4px;">Create a project at <a href="https://console.firebase.google.com" target="_blank" style="color:var(--actext);">console.firebase.google.com</a> → Project settings → Your apps → Web app config. Enable Firestore and Google Auth.</p>
     <hr class="divider">
     <button class="btn btn-d btn-sm" onclick="resetAll()" style="width:100%;justify-content:center;">Reset all data</button>
   </div>
-  <div class="mft"><button class="btn btn-g btn-sm" onclick="$('settingsModal').close()">Cancel</button><button class="btn btn-p btn-sm" onclick="saveSettings()">Save</button></div>
+  <div class="mft"><button class="btn btn-g btn-sm" onclick="M('settingsModal').close()">Cancel</button><button class="btn btn-p btn-sm" onclick="saveSettings()">Save</button></div>
 </dialog>
-
-<!-- Classroom info -->
+<!-- Classroom modal -->
 <dialog id="gcModal">
-  <div class="mhd2"><span class="mtitle">🎒 Google Classroom</span><button class="mclose" onclick="$('gcModal').close()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div class="mhd2"><span class="mtitle">🎒 Google Classroom</span><button class="mclose" onclick="M('gcModal').close()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
   <div class="mbdy">
-    <p style="font-size:.82rem;color:var(--muted);line-height:1.6;">Your Google Apps Script redirects assignments back to Tempo as <code style="font-size:.74rem;background:var(--surf3);padding:1px 5px;border-radius:3px;">?task=…&date=…</code> URL params.</p>
-    <div id="gc-link-area" style="display:none;"><a id="gc-open-link" href="#" target="_blank" class="btn btn-p" style="justify-content:center;width:100%;">Open Classroom Connector →</a></div>
-    <div id="gc-no-url" style="display:none;font-size:.82rem;color:var(--orange);">No Apps Script URL configured — add one in <strong>Settings</strong>.</div>
+    <p style="font-size:.81rem;color:var(--muted);line-height:1.6;">Your Google Apps Script page shows your Classroom assignments and announcements. Clicking any item redirects back here with URL params.</p>
+    <div id="gc-link-wrap" style="display:none;"><a id="gc-link" href="#" target="_blank" class="btn btn-p" style="width:100%;justify-content:center;">Open Classroom Connector →</a></div>
+    <div id="gc-no-url" style="display:none;font-size:.81rem;color:var(--orange);">No Apps Script URL set — add one in <strong>Settings</strong>.</div>
   </div>
-  <div class="mft"><button class="btn btn-g btn-sm" onclick="openSettings();$('gcModal').close()">Configure</button><button class="btn btn-g btn-sm" onclick="$('gcModal').close()">Close</button></div>
+  <div class="mft"><button class="btn btn-g btn-sm" onclick="openSettings();M('gcModal').close()">Configure</button><button class="btn btn-g btn-sm" onclick="M('gcModal').close()">Close</button></div>
 </dialog>
 <script>
-/* ═══════════════════════════════════════════════════
-   TEMPO v3 — Full App Logic
-═══════════════════════════════════════════════════ */
-const SK = 'tempo_v3';
-const COLORS = ['#f87171','#fb923c','#fbbf24','#c8f135','#4ade80','#38bdf8','#818cf8','#e879f9','#94a3b8'];
-const XP_PER_LEVEL = 100;
+/* ═══════════════════════════════════════════════
+   TEMPO v4 — Complete App Logic
+   Backend: https://focus.simplifiedtest10.deno.net/
+═══════════════════════════════════════════════ */
+const SK = 'tempo_v4';
+const COLORS = ['#f87171','#fb923c','#fbbf24','#4ade80','#4f9ef8','#818cf8','#e879f9','#38bdf8','#94a3b8'];
+const XP_PER_LV = 100;
+const BACKEND = 'https://focus.simplifiedtest10.deno.net';
 
-// ── DEFAULT STATE ──────────────────────────────────
+// ── DEFAULT STATE ─────────────────────────────────
 const DS = {
-  setup:false, mode:'normal', name:'', theme:'dark',
-  backendUrl:'https://focus.simplifiedtest10.deno.net/',
-  gcUrl:'',
-  lists:{}, tasks:[], projects:[], streaks:[],
-  currentView:'all', icsData:null,
-  xp:0, level:1, aiPlan:null,
+  setup:false,mode:'normal',name:'',theme:'dark',
+  backendUrl:BACKEND, gcUrl:'', fbConfig:'',
+  lists:{}, tasks:[], projects:[], streaks:[], announcements:[],
+  currentView:'all', icsData:null, xp:0, level:1, aiPlan:null,
 };
 let S = JSON.parse(JSON.stringify(DS));
-let _obMode = 'normal', _listColor = COLORS[3], _projColor = COLORS[5], _aiTask = null, _npSubtasks = [];
-let _timer = { running:false, remaining:25*60, total:25*60, isBreak:false, taskId:null };
-let _timerInterval = null;
-let _openProjects = new Set();
+let _obMode='normal', _listColor=COLORS[4], _projColor=COLORS[3], _aiTask=null, _npSubs=[];
+let _openProjs = new Set();
+let _timer = {running:false,remaining:25*60,total:25*60,isBreak:false,taskId:null};
+let _timerIv = null;
+// Firebase
+let _fbApp=null, _fbAuth=null, _fbDb=null, _fbUser=null, _fbSyncTo=null;
 
-// ── PERSISTENCE ────────────────────────────────────
-const save = () => localStorage.setItem(SK, JSON.stringify(S));
-function load() {
-  const r = localStorage.getItem(SK);
-  if (r) { try { S = {...DS,...JSON.parse(r)}; } catch(e){} }
-  if (!S.tasks) S.tasks = [];
-  if (!S.lists) S.lists = {};
-  if (!S.projects) S.projects = [];
-  if (!S.streaks) S.streaks = [];
-}
-
-// ── SHORTCUTS ─────────────────────────────────────
-const $ = id => document.getElementById(id);
-const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+// ── UTILS ─────────────────────────────────────────
+const M = id => document.getElementById(id);
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const uid = () => Math.random().toString(36).slice(2)+Date.now().toString(36);
+const pad2 = n => String(n).padStart(2,'0');
 const today = () => new Date().toISOString().split('T')[0];
-const tomorrow = () => { const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().split('T')[0]; };
+const tomorrow = () => {const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().split('T')[0];};
 function fmtDate(s){if(!s)return'';try{return new Date(s+'T00:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'});}catch{return s;}}
-function listOpts(sel=''){return Object.values(S.lists).map(l=>`<option value="${l.id}"${l.id===sel?' selected':''}>${esc(l.name)}</option>`).join('');}
-
-// ── XP SYSTEM ─────────────────────────────────────
-function addXP(amount, reason='') {
-  S.xp += amount;
-  // Level up
-  const newLevel = Math.floor(S.xp / XP_PER_LEVEL) + 1;
-  if (newLevel > S.level) { S.level = newLevel; showToast(`🏆 Level Up! You're now Level ${S.level}`, 3000); }
-  else showToast(`⚡ +${amount} XP${reason ? ' · ' + reason : ''}`, 2000);
-  save();
-  renderXP();
-}
-function renderXP() {
-  const xpInLevel = S.xp % XP_PER_LEVEL;
-  const pct = (xpInLevel / XP_PER_LEVEL) * 100;
-  $('xpBarFill').style.width = pct + '%';
-  $('levelBadge').textContent = `⚡ Level ${S.level}`;
-  $('xpLabel').textContent = `${S.xp} XP`;
-  $('xpNext').textContent = `${XP_PER_LEVEL - xpInLevel} XP to Lv ${S.level + 1}`;
-}
-function showToast(msg, duration=2200) {
-  const t = $('xpToast'); const m = $('xpToastMsg');
-  m.textContent = msg; t.style.display='flex';
-  clearTimeout(t._to);
-  t._to = setTimeout(() => { t.style.display='none'; }, duration);
+function listOpts(sel=''){
+  let opts='<option value="">No List</option>';
+  Object.values(S.lists).forEach(l=>opts+=`<option value="${l.id}"${l.id===sel?' selected':''}>${esc(l.name)}</option>`);
+  return opts;
 }
 
-// ── INIT ──────────────────────────────────────────
-function init() {
+// ── LEVEL ICONS ───────────────────────────────────
+function lvIcon(lv){
+  if(lv<5)return'🌱';if(lv<10)return'⚡';if(lv<15)return'🔥';
+  if(lv<20)return'💎';if(lv<25)return'👑';return'🌟';
+}
+function lvMsg(lv){
+  const msgs=['Keep the momentum going!','You\'re levelling up fast!','Unstoppable. Seriously.','Legend status incoming.','You\'ve earned every XP point.'];
+  return msgs[Math.min(Math.floor((lv-1)/5),msgs.length-1)];
+}
+
+// ── XP / LEVEL ────────────────────────────────────
+let _lastLevel = 1;
+function addXP(amount, reason=''){
+  S.xp+=amount;
+  const newLv = Math.floor(S.xp/XP_PER_LV)+1;
+  if(newLv>S.level){
+    S.level=newLv;
+    showLevelUp(newLv);
+  } else {
+    showToast(`⚡ +${amount} XP${reason?' · '+reason:''}`, 'xp', 2000);
+  }
+  save(); renderXP();
+}
+function renderXP(){
+  const xpInLv = S.xp % XP_PER_LV;
+  const pct = (xpInLv/XP_PER_LV)*100;
+  const icon = lvIcon(S.level);
+  M('xpFill').style.width=pct+'%';
+  M('levelBadge').textContent=`${icon} Level ${S.level}`;
+  M('xpLabel').textContent=`${S.xp} XP`;
+  M('xpCur').textContent=xpInLv;
+  M('xpTo').textContent=`${XP_PER_LV-xpInLv} to Lv ${S.level+1}`;
+}
+function showLevelUp(lv){
+  M('luIcon').textContent=lvIcon(lv);
+  M('luLevelNum').textContent=lv;
+  M('luStars').textContent='⭐'.repeat(Math.min(lv,5));
+  M('luMsg').textContent=lvMsg(lv);
+  const ov=M('luOverlay'); ov.classList.add('show');
+  clearTimeout(ov._to); ov._to=setTimeout(()=>dismissLU(),5000);
+}
+function dismissLU(){M('luOverlay').classList.remove('show');}
+
+// ── TOAST ─────────────────────────────────────────
+let _toastTo;
+function showToast(msg, cls='', ms=2200){
+  const t=M('toast'),m=M('toastMsg');
+  m.textContent=msg; t.className='show'+(cls?' '+cls:'');
+  clearTimeout(_toastTo); _toastTo=setTimeout(()=>t.className='',ms);
+}
+
+// ── PERSISTENCE ───────────────────────────────────
+function save(){
+  localStorage.setItem(SK,JSON.stringify(S));
+  if(_fbDb&&_fbUser){
+    clearTimeout(_fbSyncTo);
+    _fbSyncTo=setTimeout(()=>{
+      _fbDb.collection('users').doc(_fbUser.uid).set({state:JSON.stringify(S)}).catch(e=>console.warn('Firestore save:',e));
+    },2500);
+  }
+}
+function load(){
+  const r=localStorage.getItem(SK);
+  if(r){try{S={...DS,...JSON.parse(r)};}catch(e){}}
+  if(!S.tasks)S.tasks=[];if(!S.lists)S.lists={};if(!S.projects)S.projects=[];
+  if(!S.streaks)S.streaks=[];if(!S.announcements)S.announcements=[];
+}
+
+// ── FIREBASE ──────────────────────────────────────
+function initFirebase(configStr){
+  try{
+    const cfg=JSON.parse(configStr);
+    if(!cfg.apiKey)return;
+    if(!firebase.apps.length) firebase.initializeApp(cfg);
+    else if(firebase.apps[0]) firebase.apps[0].delete().then(()=>firebase.initializeApp(cfg));
+    _fbAuth=firebase.auth(); _fbDb=firebase.firestore();
+    _fbAuth.onAuthStateChanged(user=>{
+      _fbUser=user;
+      updateSignInBtn();
+      if(user) syncFromFirestore();
+    });
+  }catch(e){console.warn('Firebase init:',e);}
+}
+function googleSignIn(){
+  if(!_fbAuth){
+    if(S.fbConfig){initFirebase(S.fbConfig); setTimeout(googleSignIn,800);}
+    else{openSettings();showToast('Add Firebase config in Settings first','',3000);}
+    return;
+  }
+  if(_fbUser){_fbAuth.signOut().then(()=>{_fbUser=null;updateSignInBtn();showToast('Signed out','',2000);});return;}
+  const provider=new firebase.auth.GoogleAuthProvider();
+  _fbAuth.signInWithPopup(provider).catch(e=>showToast('Sign-in error: '+e.message,'',3500));
+}
+function syncFromFirestore(){
+  if(!_fbDb||!_fbUser)return;
+  _fbDb.collection('users').doc(_fbUser.uid).get().then(doc=>{
+    if(doc.exists&&doc.data().state){
+      try{const remote=JSON.parse(doc.data().state);S={...DS,...remote};save();renderAll();showToast('☁ Synced from cloud','',2200);}
+      catch(e){}
+    } else {save();}
+  }).catch(e=>console.warn('Firestore load:',e));
+}
+function updateSignInBtn(){
+  const btn=M('fbSignInBtn'),lbl=M('fbSignInLbl'),av=M('sbAvatar');
+  if(_fbUser){
+    lbl.textContent='Sign out ('+(S.name||_fbUser.displayName||'You')+')';
+    btn.style.borderColor='var(--greenbdr)';btn.style.color='var(--green)';btn.style.background='var(--greendim)';
+    if(_fbUser.photoURL){av.innerHTML=`<img src="${_fbUser.photoURL}" alt="">`;}
+  } else {
+    lbl.textContent='Sign in with Google';btn.style.borderColor='';btn.style.color='';btn.style.background='';
+    av.innerHTML='👤';
+  }
+}
+
+// ── INIT ─────────────────────────────────────────
+function init(){
   load();
-  const p = new URLSearchParams(window.location.search);
-  const tp = p.get('task');
-  if (tp) { showImportScreen(tp, p.get('date')); return; }
-  if (!S.setup) { $('ob').style.display='flex'; return; }
+  // URL params check (Classroom import)
+  const p=new URLSearchParams(window.location.search);
+  const task=p.get('task'), ann=p.get('announcement');
+  if(task){showImportScreen(task,p.get('date'),p.get('course'),'task');return;}
+  if(ann){showImportScreen(ann,p.get('date'),p.get('course'),'ann');return;}
+  if(!S.setup){M('ob').style.display='flex';return;}
   launchApp();
 }
-
-function launchApp() {
-  $('ob').style.display='none'; $('importScreen').style.display='none';
-  $('app').style.display='flex';
-  document.documentElement.setAttribute('data-theme', S.theme);
+function launchApp(){
+  M('ob').style.display='none';M('importScreen').style.display='none';
+  M('app').style.display='flex';
+  document.documentElement.setAttribute('data-theme',S.theme);
   updateThemeIcon();
+  if(S.fbConfig){try{initFirebase(S.fbConfig);}catch(e){}}
   renderAll();
 }
 
 // ── ONBOARDING ────────────────────────────────────
-function selMode(m) { _obMode=m; document.querySelectorAll('.mc').forEach(c=>c.classList.toggle('sel',c.dataset.mode===m)); }
-function finishOB() {
-  const name = $('ob-name').value.trim()||'User';
-  S.name=name; S.mode=_obMode; S.setup=true; S.theme='dark';
-  const ids = [uid(),uid(),uid()];
-  if (S.mode==='student') {
-    S.lists[ids[0]]={id:ids[0],name:'Assignments',color:'#818cf8'};
-    S.lists[ids[1]]={id:ids[1],name:'Personal',color:'#4ade80'};
-    S.lists[ids[2]]={id:ids[2],name:'Revision',color:'#fbbf24'};
-  } else {
-    S.lists[ids[0]]={id:ids[0],name:'Work',color:'#818cf8'};
-    S.lists[ids[1]]={id:ids[1],name:'Personal',color:'#4ade80'};
-    S.lists[ids[2]]={id:ids[2],name:'Projects',color:'#fbbf24'};
-  }
-  save(); launchApp();
+function selMode(m){_obMode=m;document.querySelectorAll('.mc').forEach(c=>c.classList.toggle('sel',c.dataset.mode===m));}
+function finishOB(){
+  const name=M('ob-name').value.trim()||'User';
+  S.name=name;S.mode=_obMode;S.setup=true;S.theme='dark';S.backendUrl=BACKEND;
+  const ids=[uid(),uid(),uid()];
+  if(S.mode==='student'){S.lists[ids[0]]={id:ids[0],name:'Assignments',color:'#818cf8'};S.lists[ids[1]]={id:ids[1],name:'Personal',color:'#4ade80'};S.lists[ids[2]]={id:ids[2],name:'Revision',color:'#fbbf24'};}
+  else{S.lists[ids[0]]={id:ids[0],name:'Work',color:'#818cf8'};S.lists[ids[1]]={id:ids[1],name:'Personal',color:'#4ade80'};S.lists[ids[2]]={id:ids[2],name:'Projects',color:'#fbbf24'};}
+  save();launchApp();
 }
 
-// ── CLASSROOM IMPORT ──────────────────────────────
-function showImportScreen(taskName, dateStr) {
-  $('ob').style.display='none'; $('app').style.display='none'; $('importScreen').style.display='flex';
-  $('imp-name').value = decodeURIComponent(taskName||'');
-  $('imp-date').value = parseGCDate(dateStr);
-  const sel = $('imp-list'); sel.innerHTML = '';
-  // Ensure a "Google Classroom" list exists
-  let gcList = Object.values(S.lists).find(l=>l.name==='Google Classroom');
-  if (!gcList) { const id=uid(); S.lists[id]={id,name:'Google Classroom',color:'#4ade80'}; save(); gcList=S.lists[id]; }
-  Object.values(S.lists).forEach(l => sel.innerHTML+=`<option value="${l.id}"${l.id===gcList.id?' selected':''}>${esc(l.name)}</option>`);
+// ── CLASSROOM IMPORT ─────────────────────────────
+function showImportScreen(name,dateStr,course,type){
+  M('ob').style.display='none';M('app').style.display='none';M('importScreen').style.display='flex';
+  M('imp-name').value=decodeURIComponent(name||'');
+  M('imp-date').value=parseGCDate(dateStr);
+  const body=new URLSearchParams(window.location.search).get('body')||'';
+  const sel=M('imp-list');sel.innerHTML='';
+  let gcList=Object.values(S.lists).find(l=>l.name==='Google Classroom');
+  if(!gcList){const id=uid();S.lists[id]={id,name:'Google Classroom',color:'#4ade80'};save();gcList=S.lists[id];}
+  sel.innerHTML=listOpts(gcList.id);
+  // If it's an announcement, also store it
+  if(type==='ann'&&body){
+    const existing=S.announcements.find(a=>a.text===decodeURIComponent(body));
+    if(!existing){S.announcements.push({id:uid(),title:decodeURIComponent(name||'').slice(0,80),text:decodeURIComponent(body),course:decodeURIComponent(course||''),date:parseGCDate(dateStr),read:false});}
+    save();
+  }
 }
-function saveImport() {
-  const name=$('imp-name').value.trim(); if(!name)return;
-  S.tasks.push({id:uid(),text:name,listId:$('imp-list').value,priority:$('imp-pri').value,dueDate:$('imp-date').value,completed:false,inHotlist:false,createdAt:Date.now()});
-  save(); $('imp-form').style.display='none'; $('imp-success').style.display='block';
+function saveImport(){
+  const name=M('imp-name').value.trim();if(!name)return;
+  S.tasks.push({id:uid(),text:name,listId:M('imp-list').value||null,priority:M('imp-pri').value,dueDate:M('imp-date').value,completed:false,inHotlist:false,createdAt:Date.now()});
+  addXP(5,'Task imported');save();M('imp-form').style.display='none';M('imp-success').style.display='block';
 }
-function parseGCDate(s) {
-  if(!s)return''; const d=decodeURIComponent(s).trim().toLowerCase();
+function parseGCDate(s){
+  if(!s)return'';const d=decodeURIComponent(s).trim().toLowerCase();
   if(d.includes('no due')||d==='undefined'||d==='null')return'';
-  if(d.includes('/')) { const p=d.split('/'); if(p.length===3) return `${p[2]}-${p[0].padStart(2,'0')}-${p[1].padStart(2,'0')}`; }
+  if(d.includes('/')){const p=d.split('/');if(p.length===3)return`${p[2]}-${p[0].padStart(2,'0')}-${p[1].padStart(2,'0')}`;}
   return d;
 }
 
 // ── RENDER ALL ────────────────────────────────────
-function renderAll() { renderSidebar(); renderMain(); }
+function renderAll(){renderSidebar();renderMain();}
 
 // ── SIDEBAR ───────────────────────────────────────
-function renderSidebar() {
+function renderSidebar(){
   renderXP();
-  $('nav-tt').style.display = S.mode==='student' ? 'flex' : 'none';
-  $('study-lbl').textContent = S.mode==='student' ? 'Study Session' : 'Focus Session';
-
-  // Nav active
-  const view = S.currentView;
-  document.querySelectorAll('.ni[data-view]').forEach(el => el.classList.toggle('active', el.dataset.view===view));
-
-  // Counts
-  $('cnt-all').textContent = S.tasks.filter(t=>!t.completed).length;
-  $('cnt-hotlist').textContent = S.tasks.filter(t=>t.inHotlist&&!t.completed).length;
+  M('sbUserName').textContent=S.name||'User';
+  M('sbModePill').textContent=S.mode==='student'?'Student':'Normal';
+  M('nav-tt').style.display=S.mode==='student'?'flex':'none';
+  M('study-lbl').textContent=S.mode==='student'?'Study Session':'Focus Session';
+  const annCount=S.announcements.filter(a=>!a.read).length;
+  M('cnt-ann').textContent=annCount;
+  M('nav-ann').style.display=S.announcements.length>0?'flex':'none';
+  M('cnt-all').textContent=S.tasks.filter(t=>!t.completed).length;
+  M('cnt-hotlist').textContent=S.tasks.filter(t=>t.inHotlist&&!t.completed).length;
+  document.querySelectorAll('.ni[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===S.currentView));
 
   // Lists
-  const sbL = $('sbLists'); sbL.innerHTML='';
-  Object.values(S.lists).forEach(l => {
-    const cnt = S.tasks.filter(t=>t.listId===l.id&&!t.completed).length;
-    const div = document.createElement('div');
-    div.className = 'lr'+(view===l.id?' active':'');
-    div.onclick = () => sv(l.id);
-    div.innerHTML=`<span class="lr-dot" style="background:${l.color}"></span><span class="lr-name">${esc(l.name)}</span><span class="lr-cnt">${cnt}</span><button class="lr-del" onclick="delList(event,'${l.id}')">✕</button>`;
-    sbL.appendChild(div);
+  const sbL=M('sbLists');sbL.innerHTML='';
+  // "No List" mini row
+  const noListCnt=S.tasks.filter(t=>!t.listId&&!t.completed).length;
+  if(noListCnt>0){
+    const d=document.createElement('div');d.className='lr'+(S.currentView==='nolist'?' active':'');
+    d.onclick=()=>sv('nolist');d.innerHTML=`<span class="lr-dot" style="background:var(--subtle)"></span><span class="lr-name">No List</span><span class="lr-cnt">${noListCnt}</span>`;
+    sbL.appendChild(d);
+  }
+  Object.values(S.lists).forEach(l=>{
+    const cnt=S.tasks.filter(t=>t.listId===l.id&&!t.completed).length;
+    const d=document.createElement('div');d.className='lr'+(S.currentView===l.id?' active':'');
+    d.onclick=()=>sv(l.id);
+    d.innerHTML=`<span class="lr-dot" style="background:${l.color}"></span><span class="lr-name">${esc(l.name)}</span><span class="lr-cnt">${cnt}</span><button class="lr-del" onclick="delList(event,'${l.id}')">✕</button>`;
+    sbL.appendChild(d);
   });
-
-  // Projects mini
-  const sbP = $('sbProjects'); sbP.innerHTML='';
-  S.projects.forEach(p => {
-    const total=p.subtasks.length, done=p.subtasks.filter(s=>s.done).length;
-    const pct=total?Math.round((done/total)*100):0;
-    const div=document.createElement('div');
-    div.className='proj-mini'+(view===`proj:${p.id}`?' active':'');
-    div.onclick=()=>sv(`proj:${p.id}`);
-    div.innerHTML=`<span class="proj-mini-icon" style="color:${p.color}">${p.color?'▪':'▪'}</span><span class="proj-mini-name">${esc(p.name)}</span><span class="proj-mini-pct">${pct}%</span>`;
-    sbP.appendChild(div);
-  });
-
-  // Streaks mini
-  const sbS = $('sbStreaks'); sbS.innerHTML='';
-  S.streaks.forEach(s => {
-    const div=document.createElement('div');
-    div.className='streak-mini'+(view===`streak:${s.id}`?' active':'');
-    div.onclick=()=>sv(`streak:${s.id}`);
-    div.innerHTML=`<span class="streak-fire">${s.icon||'🔥'}</span><span class="streak-mini-name">${esc(s.name)}</span><span class="streak-days">${s.currentStreak}🔥</span>`;
-    sbS.appendChild(div);
-  });
+  // Projects
+  const sbP=M('sbProjects');sbP.innerHTML='';
+  S.projects.forEach(p=>{const t=p.subtasks.length,d=p.subtasks.filter(s=>s.done).length,pct=t?Math.round((d/t)*100):0;const el=document.createElement('div');el.className='proj-mini'+(S.currentView===`proj:${p.id}`?' active':'');el.onclick=()=>sv(`proj:${p.id}`);el.innerHTML=`<span style="color:${p.color};font-size:.85rem;">▪</span><span class="lr-name">${esc(p.name)}</span><span class="proj-pct">${pct}%</span>`;sbP.appendChild(el);});
+  // Streaks
+  const sbS=M('sbStreaks');sbS.innerHTML='';
+  S.streaks.forEach(s=>{const el=document.createElement('div');el.className='streak-mini'+(S.currentView===`streak:${s.id}`?' active':'');el.onclick=()=>sv('streaks');el.innerHTML=`<span>${s.icon||'🔥'}</span><span class="lr-name">${esc(s.name)}</span><span class="streak-days">${s.currentStreak}🔥</span>`;sbS.appendChild(el);});
 }
 
-// ── MAIN ROUTER ──────────────────────────────────
-function renderMain() {
-  const v = S.currentView;
-  if (v==='timetable') return renderTimetable();
-  if (v==='study') return renderStudy();
-  if (v==='streaks') return renderStreaksPage();
-  if (v==='projects') return renderProjectsPage();
-  if (v.startsWith('streak:')) return renderSingleStreak(v.slice(7));
-  if (v.startsWith('proj:')) return renderSingleProject(v.slice(5));
+// ── MAIN ROUTER ───────────────────────────────────
+function renderMain(){
+  const v=S.currentView;
+  if(v==='timetable')return renderTimetable();
+  if(v==='study')return renderStudy();
+  if(v==='streaks')return renderStreaks();
+  if(v==='projects')return renderProjects();
+  if(v==='announcements')return renderAnnouncements();
+  if(v.startsWith('proj:'))return renderProjects();
   renderTasksView();
 }
 
 // ── TASKS VIEW ────────────────────────────────────
-function renderTasksView() {
-  const v = S.currentView;
-  const isAll = v==='all', isHL = v==='hotlist';
-  const list = (!isAll&&!isHL) ? S.lists[v] : null;
-
-  $('main-title').textContent = isHL ? '⭐ Hotlist' : isAll ? 'All Tasks' : (list?.name||'Tasks');
-  $('hactions').innerHTML = '';
-
-  const body = $('mbody'); body.innerHTML='';
-
-  if (isHL) body.innerHTML+=`<div class="hl-hint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Your Hotlist is for <strong>today's</strong> focus. Star tasks to add them here.</div>`;
-
+function renderTasksView(){
+  const v=S.currentView,isAll=v==='all',isHL=v==='hotlist',isNL=v==='nolist';
+  const list=(!isAll&&!isHL&&!isNL)?S.lists[v]:null;
+  M('main-title').textContent=isHL?'⭐ Hotlist':isNL?'📋 No List':isAll?'All Tasks':(list?.name||'Tasks');
+  M('hacts').innerHTML='';
+  const body=M('mbody');body.innerHTML='';
+  if(isHL)body.innerHTML+='<div style="padding:8px 12px;background:var(--orangedim);border:1px solid var(--orangebdr);border-radius:var(--r8);font-size:.77rem;color:var(--orange);display:flex;align-items:center;gap:7px;margin-bottom:9px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Your Hotlist = today\'s focus. Star any task to add it here.</div>';
   // AI bar
-  const ab=document.createElement('div'); ab.className='ai-bar';
-  ab.innerHTML=`<button class="ai-chip" onclick="openAITask()">✨ AI create task</button><button class="ai-chip" onclick="$('aiPlanModal').showModal()">🧠 Action plan</button>`;
+  const ab=document.createElement('div');ab.className='ai-bar';
+  ab.innerHTML='<button class="ai-chip" onclick="openAITask()">✨ AI create task</button><button class="ai-chip" onclick="M(\'planModal\').showModal()">🧠 Action plan</button>';
   body.appendChild(ab);
-
   // Plan card
-  const pc=document.createElement('div'); pc.className='plan-card'; pc.id='planCard';
-  if (S.aiPlan) { pc.style.display='block'; pc.innerHTML=`<div class="plan-hd"><span class="plan-lbl">✨ Action Plan</span><button class="ibt" onclick="clearPlan()" style="width:24px;height:24px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div><div class="plan-body">${esc(S.aiPlan)}</div>`; }
+  const pc=document.createElement('div');pc.className='plan-card';pc.id='planCard';
+  if(S.aiPlan){pc.style.display='block';pc.innerHTML=`<div class="plan-hd"><span class="plan-lbl">✨ Action Plan</span><button class="ibt" onclick="clearPlan()" style="width:22px;height:22px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div><div class="plan-body">${esc(S.aiPlan)}</div>`;}
   body.appendChild(pc);
-
-  // Add task (not hotlist)
-  if (!isHL) {
-    const ab2=document.createElement('div'); ab2.className='add-box';
-    ab2.innerHTML=`
-      <div class="add-row">
-        <input id="task-input" class="inp" style="flex:1;" placeholder="New task… (Enter to add)">
-        <button class="btn btn-p btn-sm" onclick="addTask()">Add</button>
-      </div>
-      <div class="add-meta">
-        <input type="date" id="task-date" class="inp" style="flex:1;min-width:120px;">
-        <select id="task-pri" class="inp" style="flex:1;min-width:110px;"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>
-        ${isAll?`<select id="task-list" class="inp" style="flex:1;min-width:120px;">${listOpts()}</select>`:''}
-      </div>`;
+  // Add box
+  if(!isHL){
+    const ab2=document.createElement('div');ab2.className='add-box';
+    ab2.innerHTML=`<div class="add-row"><input id="task-input" class="inp" style="flex:1;" placeholder="New task… (Enter)"><button class="btn btn-p btn-sm" onclick="addTask()">Add</button></div>
+    <div class="add-meta">
+      <input type="date" id="task-date" class="inp" style="flex:1;min-width:115px;">
+      <select id="task-pri" class="inp" style="flex:1;min-width:105px;"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>
+      ${isAll||isNL?`<select id="task-list" class="inp" style="flex:1;min-width:115px;">${listOpts()}</select>`:''}
+    </div>`;
     body.appendChild(ab2);
-    $('task-input').addEventListener('keydown', e => { if(e.key==='Enter') addTask(); });
+    M('task-input').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
   }
-
-  // Filter + sort tasks
+  // Filter tasks
   let tasks;
-  if (isHL) tasks = S.tasks.filter(t=>t.inHotlist);
-  else if (isAll) tasks = [...S.tasks];
-  else tasks = S.tasks.filter(t=>t.listId===v);
-
+  if(isHL)tasks=S.tasks.filter(t=>t.inHotlist);
+  else if(isAll)tasks=[...S.tasks];
+  else if(isNL)tasks=S.tasks.filter(t=>!t.listId);
+  else tasks=S.tasks.filter(t=>t.listId===v);
+  // Sort
   const pw={high:3,medium:2,low:1};
-  tasks.sort((a,b)=>{
-    if(a.completed!==b.completed)return a.completed?1:-1;
-    if(a.dueDate&&b.dueDate&&a.dueDate!==b.dueDate)return a.dueDate<b.dueDate?-1:1;
-    if(a.dueDate&&!b.dueDate)return -1;
-    if(!a.dueDate&&b.dueDate)return 1;
-    return pw[b.priority]-pw[a.priority];
-  });
-
+  tasks.sort((a,b)=>{if(a.completed!==b.completed)return a.completed?1:-1;if(a.dueDate&&b.dueDate&&a.dueDate!==b.dueDate)return a.dueDate<b.dueDate?-1:1;if(a.dueDate&&!b.dueDate)return -1;if(!a.dueDate&&b.dueDate)return 1;return pw[b.priority]-pw[a.priority];});
   // Progress
-  if (tasks.length>0) {
-    const done=tasks.filter(t=>t.completed).length, pct=Math.round((done/tasks.length)*100);
-    const pr=document.createElement('div'); pr.className='prog-row';
-    pr.innerHTML=`<div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div><span class="prog-txt">${tasks.length-done} remaining · ${pct}%</span>`;
-    body.appendChild(pr);
-  }
-
-  const tl=document.createElement('div'); tl.className='tasks-list';
-  const tod=today(), tom=tomorrow();
-
-  if (tasks.length===0) {
-    tl.innerHTML=`<div class="empty"><div class="em">${isHL?'⭐':'✅'}</div><h3>${isHL?'Nothing here':'All clear!'}</h3><p>${isHL?'Star tasks to add them.':'Add your first task above.'}</p></div>`;
-  } else {
-    tasks.forEach(task => {
-      const tList=S.lists[task.listId];
-      const overdue=task.dueDate&&task.dueDate<tod&&!task.completed;
-      const soon=(task.dueDate===tod||task.dueDate===tom)&&!task.completed&&!overdue;
-      const isToday=task.dueDate===tod&&!task.completed;
-
-      const c=document.createElement('div');
-      c.className='tc'+(task.completed?' done':'')+(overdue?' overdue':'')+((!overdue&&soon)?' soon':'');
-
-      const dateBdg=task.dueDate?`<span class="badge bdg-date ${overdue?'overdue':isToday?'today':soon?'soon':''}">${overdue?'⚠ Overdue':isToday?'Today':fmtDate(task.dueDate)}</span>`:'';
-      const listBdg=(isAll||isHL)&&tList?`<span class="badge bdg-list" style="color:${tList.color};background:${tList.color}18;border:1px solid ${tList.color}30;">${esc(tList.name)}</span>`:'';
-      const hlBdg=task.inHotlist&&!isHL?`<span class="badge" style="background:var(--orangedim);color:var(--orange);">⭐ Hotlist</span>`:'';
-
-      c.innerHTML=`
-        <input type="checkbox" class="chk" ${task.completed?'checked':''} onchange="toggleTask('${task.id}')">
-        <div class="tc-body">
-          <div class="tc-title">${esc(task.text)}</div>
-          <div class="tc-meta">
-            <span class="badge bdg-${task.priority}">${task.priority}</span>
-            ${dateBdg}${listBdg}${hlBdg}
-          </div>
-        </div>
-        <div class="tc-acts">
-          <button class="ta ${task.inHotlist?'hl-off':'hl-on'}" onclick="toggleHL('${task.id}')" title="${task.inHotlist?'Remove from Hotlist':'Add to Hotlist'}">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="${task.inHotlist?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </button>
-          <button class="ta" onclick="openEdit('${task.id}')" title="Edit"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg></button>
-          <button class="ta del" onclick="delTask('${task.id}')" title="Delete"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="m19 6-.867 12.142A2 2 0 0 1 16.138 20H7.862a2 2 0 0 1-1.995-1.858L5 6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
-        </div>`;
-      tl.appendChild(c);
-    });
-  }
+  if(tasks.length>0){const done=tasks.filter(t=>t.completed).length,pct=Math.round((done/tasks.length)*100);const pr=document.createElement('div');pr.className='prog-row';pr.innerHTML=`<div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div><span class="prog-txt">${tasks.length-done} remaining · ${pct}%</span>`;body.appendChild(pr);}
+  // Task list
+  const tl=document.createElement('div');tl.className='tasks-list';
+  const tod=today(),tom=tomorrow();
+  if(tasks.length===0){tl.innerHTML=`<div class="empty"><div class="em">${isHL?'⭐':'✅'}</div><h3>${isHL?'Nothing here yet':'All clear!'}</h3><p>${isHL?'Star tasks to add them.':'Add a task above.'}</p></div>`;}
+  else tasks.forEach(task=>{
+    const tList=S.lists[task.listId];
+    const over=task.dueDate&&task.dueDate<tod&&!task.completed;
+    const soon=(task.dueDate===tod||task.dueDate===tom)&&!task.completed&&!over;
+    const isToday=task.dueDate===tod;
+    const c=document.createElement('div');c.className='tc'+(task.completed?' t-done':'')+(over?' t-overdue':'')+((!over&&soon)?' t-soon':'');
+    const dateBdg=task.dueDate?`<span class="badge bdg-date ${over?'overdue':isToday?'today':soon?'soon':''}">${over?'⚠ Overdue':isToday?'Today':fmtDate(task.dueDate)}</span>`:'';
+    const listBdg=(isAll||isHL||isNL)&&tList?`<span class="badge" style="color:${tList.color};background:${tList.color}18;border:1px solid ${tList.color}30;">${esc(tList.name)}</span>`:'';
+    const hlBdg=task.inHotlist&&!isHL?'<span class="badge" style="background:var(--orangedim);color:var(--orange);">⭐</span>':'';
+    c.innerHTML=`<input type="checkbox" class="chk" ${task.completed?'checked':''} onchange="toggleTask('${task.id}')">
+      <div class="tc-body"><div class="tc-title">${esc(task.text)}</div><div class="tc-meta"><span class="badge bdg-${task.priority}">${task.priority}</span>${dateBdg}${listBdg}${hlBdg}</div></div>
+      <div class="tc-acts">
+        <button class="ta" onclick="toggleHL('${task.id}')" title="${task.inHotlist?'Remove from Hotlist':'Add to Hotlist'}" style="${task.inHotlist?'color:var(--orange);':''}" ><svg width="11" height="11" viewBox="0 0 24 24" fill="${task.inHotlist?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></button>
+        <button class="ta" onclick="openEdit('${task.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg></button>
+        <button class="ta del" onclick="delTask('${task.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="m19 6-.867 12.142A2 2 0 0 1 16.138 20H7.862a2 2 0 0 1-1.995-1.858L5 6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+      </div>`;
+    tl.appendChild(c);
+  });
   body.appendChild(tl);
 }
 
 // ── TASK CRUD ─────────────────────────────────────
-function addTask() {
-  const inp=$('task-input'); const text=inp?.value.trim(); if(!text)return;
-  const listId = S.currentView==='all' ? ($('task-list')?.value||Object.keys(S.lists)[0]) : S.currentView;
-  S.tasks.push({id:uid(),text,listId,priority:$('task-pri')?.value||'medium',dueDate:$('task-date')?.value||'',completed:false,inHotlist:false,createdAt:Date.now()});
-  inp.value=''; addXP(5,'Task added'); save(); renderAll();
+function addTask(){
+  const inp=M('task-input');const text=inp?.value.trim();if(!text)return;
+  let listId=null;
+  if(S.currentView==='all'||S.currentView==='nolist')listId=M('task-list')?.value||null;
+  else if(S.currentView!=='hotlist')listId=S.currentView;
+  S.tasks.push({id:uid(),text,listId:listId||null,priority:M('task-pri')?.value||'medium',dueDate:M('task-date')?.value||'',completed:false,inHotlist:false,createdAt:Date.now()});
+  inp.value='';addXP(5,'Task added');save();renderAll();
 }
-function toggleTask(id) {
-  const t=S.tasks.find(t=>t.id===id); if(!t)return;
-  t.completed=!t.completed;
-  if(t.completed) addXP(10,'Task done ✓');
-  save(); renderAll();
-}
-function delTask(id) { S.tasks=S.tasks.filter(t=>t.id!==id); save(); renderAll(); }
-function toggleHL(id) { const t=S.tasks.find(t=>t.id===id); if(t){t.inHotlist=!t.inHotlist;save();renderAll();} }
-function openEdit(id) {
-  const t=S.tasks.find(t=>t.id===id); if(!t)return;
-  $('ed-id').value=id; $('ed-txt').value=t.text; $('ed-date').value=t.dueDate||''; $('ed-pri').value=t.priority;
-  $('ed-list').innerHTML=listOpts(t.listId); $('editModal').showModal();
-}
-function saveEdit() {
-  const t=S.tasks.find(t=>t.id===$('ed-id').value); if(!t)return;
-  t.text=$('ed-txt').value.trim()||t.text; t.dueDate=$('ed-date').value; t.priority=$('ed-pri').value; t.listId=$('ed-list').value;
-  save(); $('editModal').close(); renderAll();
-}
+function toggleTask(id){const t=S.tasks.find(t=>t.id===id);if(!t)return;t.completed=!t.completed;if(t.completed)addXP(10,'Task done ✓');save();renderAll();}
+function delTask(id){S.tasks=S.tasks.filter(t=>t.id!==id);save();renderAll();}
+function toggleHL(id){const t=S.tasks.find(t=>t.id===id);if(t){t.inHotlist=!t.inHotlist;save();renderAll();}}
+function openEdit(id){const t=S.tasks.find(t=>t.id===id);if(!t)return;M('ed-id').value=id;M('ed-txt').value=t.text;M('ed-date').value=t.dueDate||'';M('ed-pri').value=t.priority;M('ed-list').innerHTML=listOpts(t.listId||'');M('editModal').showModal();}
+function saveEdit(){const t=S.tasks.find(t=>t.id===M('ed-id').value);if(!t)return;t.text=M('ed-txt').value.trim()||t.text;t.dueDate=M('ed-date').value;t.priority=M('ed-pri').value;t.listId=M('ed-list').value||null;save();M('editModal').close();renderAll();}
 
-// ── LIST CRUD ─────────────────────────────────────
-function openAddList() {
-  _listColor=COLORS[Math.floor(Math.random()*COLORS.length)];
-  $('nl-name').value=''; renderSwatches('nl-swatches','_listColor'); $('addListModal').showModal();
-}
-function createList() {
-  const name=$('nl-name').value.trim(); if(!name)return;
-  const id=uid(); S.lists[id]={id,name,color:_listColor}; save(); $('addListModal').close(); renderAll();
-}
-function delList(e, id) {
-  e.stopPropagation();
-  if(!confirm('Delete this list? Tasks in it will be deleted too.'))return;
-  delete S.lists[id]; S.tasks=S.tasks.filter(t=>t.listId!==id);
-  if(S.currentView===id) S.currentView='all'; save(); renderAll();
-}
-function renderSwatches(containerId, colorVar) {
-  const c=document.getElementById(containerId); if(!c)return; c.innerHTML='';
-  COLORS.forEach(col=>{
-    const s=document.createElement('div'); s.className='swatch'+(window[colorVar]===col?' on':'');
-    s.style.background=col;
-    s.onclick=()=>{ window[colorVar]=col; renderSwatches(containerId,colorVar); };
-    c.appendChild(s);
-  });
-}
+// ── LISTS ─────────────────────────────────────────
+function openAddList(){_listColor=COLORS[Math.floor(Math.random()*COLORS.length)];M('nl-name').value='';renderSw('nl-sw','_listColor');M('listModal').showModal();}
+function createList(){const name=M('nl-name').value.trim();if(!name)return;const id=uid();S.lists[id]={id,name,color:_listColor};save();M('listModal').close();renderAll();}
+function delList(e,id){e.stopPropagation();if(!confirm('Delete list and its tasks?'))return;delete S.lists[id];S.tasks=S.tasks.filter(t=>t.listId!==id);if(S.currentView===id)S.currentView='all';save();renderAll();}
+function renderSw(containerId,varName){const c=M(containerId);if(!c)return;c.innerHTML='';COLORS.forEach(col=>{const s=document.createElement('div');s.className='sw'+(window[varName]===col?' on':'');s.style.background=col;s.onclick=()=>{window[varName]=col;renderSw(containerId,varName);};c.appendChild(s);});}
 
 // ── STREAKS ───────────────────────────────────────
-function renderStreaksPage() {
-  $('main-title').textContent = '🔥 Streaks';
-  $('hactions').innerHTML=`<button class="btn btn-p btn-sm" onclick="$('newStreakModal').showModal()">+ New Streak</button>`;
-  const body=$('mbody'); body.innerHTML='';
+function calcStreakXP(currentStreak){return Math.min(15+(currentStreak-1)*5,150);}
 
-  if(S.streaks.length===0){body.innerHTML='<div class="empty"><div class="em">🔥</div><h3>No streaks yet</h3><p>Create a streak to track your habits daily.</p></div>';return;}
-
-  const grid=document.createElement('div'); grid.className='streak-grid';
-  S.streaks.forEach(s => {
-    const doneToday = s.log && s.log.includes(today());
-    const c=document.createElement('div'); c.className='streak-card'+(doneToday?' done-today':'');
-    // last 14 days dots
-    const dots = Array.from({length:14},(_,i)=>{
-      const d=new Date(); d.setDate(d.getDate()-(13-i));
-      const ds=d.toISOString().split('T')[0];
-      const isT=ds===today(), done=s.log&&s.log.includes(ds);
-      return `<div class="sc-dot${done?' done':isT&&!done?' today-empty':''}"></div>`;
-    }).join('');
+function renderStreaks(){
+  M('main-title').textContent='🔥 Streaks';
+  M('hacts').innerHTML='<button class="btn btn-p btn-sm" onclick="M(\'streakModal\').showModal()">+ New Streak</button>';
+  const body=M('mbody');body.innerHTML='';
+  if(S.streaks.length===0){body.innerHTML='<div class="empty"><div class="em">🔥</div><h3>No streaks yet</h3><p>Create a habit streak and earn XP every day you keep it up.</p></div>';return;}
+  const grid=document.createElement('div');grid.className='streak-grid';
+  const tod=today();
+  S.streaks.forEach(s=>{
+    const doneToday=s.log&&s.log.includes(tod);
+    const paused=s.pause&&s.pause.until===tod;
+    const xpToday=calcStreakXP((s.currentStreak||0)+1);
+    const targetPct=s.targetDays?Math.min(Math.round(((s.currentStreak||0)/s.targetDays)*100),100):null;
+    const dots=Array.from({length:14},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(13-i));const ds=d.toISOString().split('T')[0];const isT=ds===tod,done=s.log&&s.log.includes(ds);return `<div class="sd${done?' done':isT&&!done?' today-empty':''}"></div>`;}).join('');
+    // Can pause? Only if not paused recently (check last 7 days)
+    const recentPause=s.pauseHistory&&s.pauseHistory.some(ph=>{const phd=new Date(ph);const now=new Date();return(now-phd)/(1000*60*60*24)<7;});
+    const canPause=!paused&&!doneToday&&!recentPause;
+    const c=document.createElement('div');c.className='sc'+(doneToday?' checked':paused?' paused-card':'');
     c.innerHTML=`
-      <div class="sc-top">
-        <span class="sc-icon">${s.icon||'🔥'}</span>
+      <div class="sc-top"><span class="sc-icon">${s.icon||'🔥'}</span>
         <div class="sc-acts">
-          <button class="ta del" onclick="delStreak('${s.id}')" title="Delete"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="m19 6-.867 12.142A2 2 0 0 1 16.138 20H7.862a2 2 0 0 1-1.995-1.858L5 6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+          ${canPause?`<button class="ta btn-xs" onclick="openPause('${s.id}')" title="Pause for today" style="font-size:.65rem;background:var(--orangedim);color:var(--orange);border:1px solid var(--orangebdr);border-radius:5px;padding:2px 6px;height:auto;width:auto;">⏸ Pause</button>`:''}
+          <button class="ta del" onclick="delStreak('${s.id}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="m19 6-.867 12.142A2 2 0 0 1 16.138 20H7.862a2 2 0 0 1-1.995-1.858L5 6"/></svg></button>
         </div>
       </div>
       <div class="sc-name">${esc(s.name)}</div>
       <div class="sc-desc">${esc(s.desc||'')}</div>
-      <div class="sc-stats" style="margin-top:10px;">
-        <div class="sc-stat"><div class="sc-stat-val" style="color:var(--orange)">${s.currentStreak}</div><div class="sc-stat-lbl">Current</div></div>
-        <div class="sc-stat"><div class="sc-stat-val" style="color:var(--gold)">${s.bestStreak}</div><div class="sc-stat-lbl">Best</div></div>
-        <div class="sc-stat"><div class="sc-stat-val">${(s.log||[]).length}</div><div class="sc-stat-lbl">Total</div></div>
+      <div class="sc-stats">
+        <div><div class="ss-val" style="color:var(--orange)">${s.currentStreak||0}</div><div class="ss-lbl">Current</div></div>
+        <div><div class="ss-val" style="color:var(--gold)">${s.bestStreak||0}</div><div class="ss-lbl">Best</div></div>
+        <div><div class="ss-val">${(s.log||[]).length}</div><div class="ss-lbl">Total</div></div>
       </div>
-      <div class="sc-xp">⚡ ${s.xpPerCheck} XP per check-in</div>
+      ${s.targetDays?`<div class="sc-target">Day ${s.currentStreak||0} of ${s.targetDays}</div><div class="sc-target-fill"><div class="sc-target-bar" style="width:${targetPct}%"></div></div>`:''}
+      <div class="sc-xp-lbl">⚡ +${xpToday} XP next check-in${s.currentStreak>0?' (day '+((s.currentStreak||0)+1)+')':''}</div>
+      ${paused?`<div class="pause-row">⏸ Paused today · "${esc(s.pause.reason||'')}"</div>`:''}
       <div class="sc-dots">${dots}</div>
-      <button class="btn sc-btn ${doneToday?'btn-g':'btn-p'}" onclick="checkInStreak('${s.id}')" ${doneToday?'disabled':''}>
-        ${doneToday?'✓ Done for today':'Check in today'}
+      <button class="btn btn-sm ${doneToday?'btn-g':'btn-p'}" style="width:100%;justify-content:center;" onclick="checkIn('${s.id}')" ${doneToday||paused?'disabled':''}>
+        ${paused?'⏸ Paused today':doneToday?'✓ Done for today':'Check in today'}
       </button>`;
     grid.appendChild(c);
   });
   body.appendChild(grid);
-
-  // Add btn below
-  const ab=document.createElement('div'); ab.style.textAlign='center';
-  ab.innerHTML=`<button class="btn btn-g" onclick="$('newStreakModal').showModal()">+ New Streak</button>`;
-  body.appendChild(ab);
 }
 
-function renderSingleStreak(id) {
-  const s=S.streaks.find(s=>s.id===id); if(!s){sv('streaks');return;}
-  $('main-title').textContent=`${s.icon||'🔥'} ${s.name}`;
-  $('hactions').innerHTML=`<button class="btn btn-d btn-sm" onclick="delStreak('${s.id}')">Delete</button>`;
-  renderStreaksPage(); // just show all for now
+function checkIn(id){
+  const s=S.streaks.find(s=>s.id===id);if(!s)return;
+  const tod=today();if(s.log&&s.log.includes(tod))return;
+  if(!s.log)s.log=[];s.log.push(tod);
+  // Calc streak (consecutive days including today)
+  let streak=0,d=new Date();
+  while(true){
+    const ds=d.toISOString().split('T')[0];
+    const paused=s.pauseHistory&&s.pauseHistory.includes(ds);
+    if(s.log.includes(ds)||paused){streak++;d.setDate(d.getDate()-1);}else break;
+  }
+  s.currentStreak=streak;s.bestStreak=Math.max(s.bestStreak||0,streak);
+  const xp=calcStreakXP(streak);
+  if(s.targetDays&&streak>=s.targetDays){showToast(`🏆 Streak target reached! ${s.targetDays} days!`,'',4000);addXP(xp*2,'🏆 Target reached!');}
+  else{addXP(xp,`${s.icon||'🔥'} ${s.name} (Day ${streak})`);}
+  save();renderAll();
 }
 
-function createStreak() {
-  const name=$('ns-name').value.trim(); if(!name)return;
-  S.streaks.push({id:uid(),name,desc:$('ns-desc').value.trim(),icon:$('ns-icon').value.trim()||'🔥',xpPerCheck:parseInt($('ns-xp').value)||15,log:[],currentStreak:0,bestStreak:0});
-  save(); $('newStreakModal').close(); sv('streaks');
-}
-
-function checkInStreak(id) {
-  const s=S.streaks.find(s=>s.id===id); if(!s)return;
+function openPause(id){M('pause-id').value=id;M('pause-reason').value='';M('pauseModal').showModal();}
+function confirmPause(){
+  const id=M('pause-id').value,reason=M('pause-reason').value.trim();
+  const s=S.streaks.find(s=>s.id===id);if(!s)return;
   const tod=today();
-  if(s.log&&s.log.includes(tod))return;
-  if(!s.log)s.log=[];
-  s.log.push(tod);
-  // Calc streak
-  let streak=0, d=new Date();
-  while(true){const ds=d.toISOString().split('T')[0];if(s.log.includes(ds)){streak++;d.setDate(d.getDate()-1);}else break;}
-  s.currentStreak=streak;
-  s.bestStreak=Math.max(s.bestStreak||0,streak);
-  addXP(s.xpPerCheck, `${s.icon||'🔥'} ${s.name} streak`);
-  save(); renderAll();
+  s.pause={until:tod,reason};
+  if(!s.pauseHistory)s.pauseHistory=[];s.pauseHistory.push(tod);
+  save();M('pauseModal').close();renderAll();showToast('⏸ Streak paused for today','',2500);
 }
-
-function delStreak(id) {
-  if(!confirm('Delete this streak?'))return;
-  S.streaks=S.streaks.filter(s=>s.id!==id); save();
-  if(S.currentView===`streak:${id}`)sv('streaks'); else renderAll();
+function createStreak(){
+  const name=M('ns-name').value.trim();if(!name)return;
+  S.streaks.push({id:uid(),name,desc:M('ns-desc').value.trim(),icon:M('ns-icon').value.trim()||'🔥',targetDays:parseInt(M('ns-target').value)||30,log:[],currentStreak:0,bestStreak:0,pauseHistory:[]});
+  save();M('streakModal').close();sv('streaks');
 }
+function delStreak(id){if(!confirm('Delete this streak?'))return;S.streaks=S.streaks.filter(s=>s.id!==id);save();if(S.currentView===`streak:${id}`)sv('streaks');else renderAll();}
 
-// ── PROJECTS ─────────────────────────────────────
-function renderProjectsPage() {
-  $('main-title').textContent='📁 Projects';
-  $('hactions').innerHTML=`<button class="btn btn-p btn-sm" onclick="openNewProj()">+ New Project</button>`;
-  const body=$('mbody'); body.innerHTML='';
-
-  if(S.projects.length===0){body.innerHTML='<div class="empty"><div class="em">📁</div><h3>No projects yet</h3><p>Projects let you break big goals into subtasks.</p></div>';return;}
-
-  const pc=document.createElement('div'); pc.className='proj-cards';
+// ── PROJECTS ──────────────────────────────────────
+let _projColor2='#4f9ef8';
+function renderProjects(){
+  M('main-title').textContent='📁 Projects';
+  M('hacts').innerHTML='<button class="btn btn-p btn-sm" onclick="openNewProj()">+ New Project</button>';
+  const body=M('mbody');body.innerHTML='';
+  if(S.projects.length===0){body.innerHTML='<div class="empty"><div class="em">📁</div><h3>No projects yet</h3><p>Projects break big goals into trackable subtasks.</p></div>';return;}
+  const pc=document.createElement('div');pc.className='proj-cards';
   S.projects.forEach(p=>{
-    const total=p.subtasks.length, done=p.subtasks.filter(s=>s.done).length;
-    const pct=total?Math.round((done/total)*100):0;
-    const open=_openProjects.has(p.id);
-    const card=document.createElement('div'); card.className='proj-card';
-
-    const subtasksHTML=p.subtasks.map(st=>`
-      <div class="stc${st.done?' done-st':''}">
-        <input type="checkbox" class="chk" ${st.done?'checked':''} onchange="toggleSubtask('${p.id}','${st.id}')">
-        <span class="st-txt">${esc(st.title)}</span>
-        <span class="badge bdg-${st.priority||'low'}">${st.priority||'low'}</span>
-        <button class="st-del" onclick="delSubtask('${p.id}','${st.id}')">✕</button>
-      </div>`).join('');
-
-    card.innerHTML=`
-      <div class="proj-hd" onclick="toggleProj('${p.id}')">
-        <div class="proj-color-bar" style="background:${p.color}"></div>
-        <div class="proj-info">
-          <div class="proj-title">${esc(p.name)}</div>
-          <div class="proj-desc">${esc(p.desc||`${done}/${total} subtasks`)}</div>
-        </div>
-        <div class="proj-meta">
-          ${p.dueDate?`<span class="badge bdg-date">${fmtDate(p.dueDate)}</span>`:''}
-          <span style="font-size:.72rem;font-weight:700;color:${pct===100?'var(--green)':'var(--muted)'};">${pct}%</span>
-          <span style="color:var(--muted);font-size:.8rem;">${open?'▲':'▾'}</span>
-        </div>
-      </div>
+    const tot=p.subtasks.length,done=p.subtasks.filter(s=>s.done).length,pct=tot?Math.round((done/tot)*100):0;
+    const open=_openProjs.has(p.id);
+    const card=document.createElement('div');card.className='proj-card';
+    const stHTML=p.subtasks.map(st=>`<div class="stc${st.done?' st-done':''}"><input type="checkbox" class="chk" ${st.done?'checked':''} onchange="toggleST('${p.id}','${st.id}')"><span class="st-txt">${esc(st.title)}</span><span class="badge bdg-${st.priority||'low'}">${st.priority||'low'}</span><button style="background:none;border:none;color:var(--subtle);cursor:pointer;font-size:.78rem;transition:color var(--t);" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--subtle)'" onclick="delST('${p.id}','${st.id}')">✕</button></div>`).join('');
+    card.innerHTML=`<div class="proj-hd" onclick="toggleProj('${p.id}')">
+      <div class="proj-bar" style="background:${p.color}"></div>
+      <div class="proj-info"><div class="proj-title">${esc(p.name)}</div><div class="proj-desc">${esc(p.desc||`${done}/${tot} subtasks`)}</div></div>
+      <div style="display:flex;align-items:center;gap:7px;flex-shrink:0;">
+        ${p.dueDate?`<span class="badge bdg-date">${fmtDate(p.dueDate)}</span>`:''}
+        <span style="font-size:.7rem;font-weight:700;color:${pct===100?'var(--green)':'var(--muted)'};">${pct}%</span>
+        <span style="color:var(--muted);font-size:.78rem;">${open?'▲':'▾'}</span>
+      </div></div>
       <div class="proj-body${open?' open':''}">
-        <div class="proj-subtasks">${subtasksHTML||'<p style="font-size:.8rem;color:var(--muted);padding:6px 0;">No subtasks yet.</p>'}</div>
-        <div class="proj-add-row">
-          <input class="inp" id="st-inp-${p.id}" placeholder="Add subtask…" style="flex:1;" onkeydown="if(event.key==='Enter')addSubtask('${p.id}')">
-          <select class="inp btn-sm" id="st-pri-${p.id}" style="width:auto;min-width:90px;flex-shrink:0;"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>
-          <button class="btn btn-p btn-sm" onclick="addSubtask('${p.id}')">Add</button>
+        <div style="display:flex;flex-direction:column;gap:3px;margin:9px 0;">${stHTML||'<p style="font-size:.78rem;color:var(--muted);padding:5px 0;">No subtasks yet.</p>'}</div>
+        <div style="display:flex;gap:6px;margin-bottom:7px;">
+          <input class="inp" id="st-${p.id}" placeholder="Add subtask…" style="flex:1;" onkeydown="if(event.key==='Enter')addST('${p.id}')">
+          <select class="inp btn-sm" id="stp-${p.id}" style="width:auto;min-width:88px;flex-shrink:0;"><option value="low">Low</option><option value="medium" selected>Med</option><option value="high">High</option></select>
+          <button class="btn btn-p btn-sm" onclick="addST('${p.id}')">Add</button>
         </div>
-        <div style="display:flex;gap:6px;margin-top:8px;">
-          <button class="btn btn-ai btn-sm" onclick="aiGenSubtasksForProject('${p.id}')">✨ AI more subtasks</button>
-          <button class="btn btn-d btn-sm" onclick="delProject('${p.id}')">Delete project</button>
+        <div style="display:flex;gap:5px;">
+          <button class="btn btn-ai btn-sm" onclick="aiMoreSTs('${p.id}')">✨ AI subtasks</button>
+          <button class="btn btn-d btn-sm" onclick="delProj('${p.id}')">Delete</button>
         </div>
       </div>`;
     pc.appendChild(card);
   });
   body.appendChild(pc);
 }
+function toggleProj(id){if(_openProjs.has(id))_openProjs.delete(id);else _openProjs.add(id);renderProjects();}
+function openNewProj(){_projColor2=COLORS[2];_npSubs=[];M('np-name').value='';M('np-desc').value='';M('np-date').value='';M('np-st-preview').innerHTML='';M('np-ai-st').style.display='none';renderSw('np-sw','_projColor2');M('projModal').showModal();}
+function createProject(){const name=M('np-name').value.trim();if(!name)return;S.projects.push({id:uid(),name,desc:M('np-desc').value.trim(),dueDate:M('np-date').value,color:_projColor2,subtasks:_npSubs.map(s=>({...s,id:uid(),done:false})),createdAt:Date.now()});save();M('projModal').close();sv('projects');}
+async function aiGenSubtasks(){const name=M('np-name').value.trim();if(!name){alert('Enter a project name first.');return;}if(!S.backendUrl){alert('Set Backend URL in Settings.');return;}M('np-ai-st').style.display='block';try{const r=await fetch(`${S.backendUrl}/ai/project`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projectName:name,description:M('np-desc').value.trim(),count:6})});const d=await r.json();let raw=d.response||'[]';raw=raw.replace(/```json|```/g,'').trim();_npSubs=JSON.parse(raw).map(s=>({title:s.title||'',priority:s.priority||'medium',dueOffset:s.dueOffset}));renderNpSubs();}catch(e){alert('AI error: '+e.message);}finally{M('np-ai-st').style.display='none';}}
+function renderNpSubs(){const c=M('np-st-preview');c.innerHTML='';_npSubs.forEach((s,i)=>{const d=document.createElement('div');d.className='stc';d.innerHTML=`<span class="st-txt">${esc(s.title)}</span><span class="badge bdg-${s.priority}">${s.priority}</span><button style="background:none;border:none;color:var(--subtle);cursor:pointer;" onclick="_npSubs.splice(${i},1);renderNpSubs()">✕</button>`;c.appendChild(d);});}
+async function aiMoreSTs(projId){const p=S.projects.find(p=>p.id===projId);if(!p||!S.backendUrl)return;try{const r=await fetch(`${S.backendUrl}/ai/project`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projectName:p.name,description:p.desc,count:4})});const d=await r.json();let raw=d.response||'[]';raw=raw.replace(/```json|```/g,'').trim();JSON.parse(raw).forEach(s=>p.subtasks.push({id:uid(),title:s.title,priority:s.priority||'medium',done:false}));save();renderProjects();}catch(e){alert('AI error: '+e.message);}}
+function addST(projId){const p=S.projects.find(p=>p.id===projId);if(!p)return;const inp=M(`st-${projId}`),pri=M(`stp-${projId}`);const txt=inp?.value.trim();if(!txt)return;p.subtasks.push({id:uid(),title:txt,priority:pri?.value||'medium',done:false});addXP(3,'Subtask added');save();renderProjects();setTimeout(()=>{const el=M(`st-${projId}`);if(el)el.focus();},50);}
+function toggleST(projId,stId){const p=S.projects.find(p=>p.id===projId);if(!p)return;const st=p.subtasks.find(s=>s.id===stId);if(!st)return;st.done=!st.done;if(st.done){addXP(8,'Subtask done ✓');if(p.subtasks.every(s=>s.done)){addXP(25,'Project complete! 🎉');showToast('🎉 Project complete! +25 bonus XP','',3500);}}save();renderProjects();}
+function delST(projId,stId){const p=S.projects.find(p=>p.id===projId);if(!p)return;p.subtasks=p.subtasks.filter(s=>s.id!==stId);save();renderProjects();}
+function delProj(id){if(!confirm('Delete this project?'))return;S.projects=S.projects.filter(p=>p.id!==id);save();renderProjects();}
 
-function renderSingleProject(id) { sv('projects'); } // redirect to projects page
-
-function toggleProj(id) {
-  if(_openProjects.has(id))_openProjects.delete(id); else _openProjects.add(id);
-  renderProjectsPage();
-}
-
-function openNewProj() {
-  _projColor=COLORS[2]; _npSubtasks=[];
-  $('np-name').value=''; $('np-desc').value=''; $('np-date').value='';
-  $('np-subtask-preview').innerHTML=''; $('np-ai-status').style.display='none';
-  renderSwatches('np-swatches','_projColor'); $('newProjModal').showModal();
-}
-
-function createProject() {
-  const name=$('np-name').value.trim(); if(!name)return;
-  S.projects.push({id:uid(),name,desc:$('np-desc').value.trim(),dueDate:$('np-date').value,color:_projColor,subtasks:_npSubtasks.map(s=>({...s,id:uid(),done:false})),createdAt:Date.now()});
-  save(); $('newProjModal').close(); sv('projects');
-}
-
-async function aiGenSubtasks() {
-  const name=$('np-name').value.trim(); if(!name){alert('Enter a project name first.');return;}
-  if(!S.backendUrl){alert('Set your Backend URL in Settings first.');return;}
-  $('np-ai-status').style.display='block';
-  try {
-    const res=await fetch(`${S.backendUrl}/ai/project`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projectName:name,description:$('np-desc').value.trim(),count:6})});
-    const data=await res.json();
-    let raw=data.response||'[]'; raw=raw.replace(/```json|```/g,'').trim();
-    const parsed=JSON.parse(raw);
-    _npSubtasks=parsed.map(s=>({title:s.title||'',priority:s.priority||'medium',dueOffset:s.dueOffset}));
-    renderNpSubtaskPreview();
-  } catch(e){ alert('AI error: '+(e.message||'Could not reach backend.')); }
-  finally { $('np-ai-status').style.display='none'; }
-}
-
-function renderNpSubtaskPreview() {
-  const c=$('np-subtask-preview'); c.innerHTML='';
-  _npSubtasks.forEach((s,i)=>{
-    const d=document.createElement('div'); d.className='stc';
-    d.innerHTML=`<span class="st-txt" style="flex:1;">${esc(s.title)}</span><span class="badge bdg-${s.priority}">${s.priority}</span><button class="st-del" onclick="_npSubtasks.splice(${i},1);renderNpSubtaskPreview()">✕</button>`;
-    c.appendChild(d);
+// ── ANNOUNCEMENTS ─────────────────────────────────
+function renderAnnouncements(){
+  M('main-title').textContent='📢 Announcements';
+  M('hacts').innerHTML='<button class="btn btn-g btn-sm" onclick="clearAnnouncements()">Clear all</button>';
+  const body=M('mbody');body.innerHTML='';
+  // Mark all read
+  S.announcements.forEach(a=>a.read=true);save();
+  if(S.announcements.length===0){body.innerHTML='<div class="empty"><div class="em">📢</div><h3>No announcements</h3><p>Imported Classroom announcements appear here.</p></div>';return;}
+  const al=document.createElement('div');al.className='ann-list';
+  [...S.announcements].reverse().forEach(ann=>{
+    const c=document.createElement('div');c.className='ann-card';
+    c.innerHTML=`<div class="ann-head"><span class="ann-course">${esc(ann.course||'Classroom')}</span><span class="ann-date">${ann.date||''}</span></div>
+      <div class="ann-body">${esc(ann.text||ann.title||'')}</div>
+      <button class="btn btn-ai btn-sm" onclick="annToTask('${ann.id}')">+ Add as task</button>`;
+    al.appendChild(c);
   });
+  body.appendChild(al);
 }
-
-async function aiGenSubtasksForProject(projId) {
-  const p=S.projects.find(p=>p.id===projId); if(!p)return;
-  if(!S.backendUrl){alert('Set your Backend URL in Settings first.');return;}
-  try {
-    const res=await fetch(`${S.backendUrl}/ai/project`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projectName:p.name,description:p.desc,count:4})});
-    const data=await res.json();
-    let raw=data.response||'[]'; raw=raw.replace(/```json|```/g,'').trim();
-    const parsed=JSON.parse(raw);
-    parsed.forEach(s=>p.subtasks.push({id:uid(),title:s.title||'',priority:s.priority||'medium',done:false}));
-    save(); renderProjectsPage();
-  } catch(e){ alert('AI error: '+(e.message||'Backend unreachable.')); }
-}
-
-function addSubtask(projId) {
-  const p=S.projects.find(p=>p.id===projId); if(!p)return;
-  const inp=$(`st-inp-${projId}`), pri=$(`st-pri-${projId}`);
-  const txt=inp?.value.trim(); if(!txt)return;
-  p.subtasks.push({id:uid(),title:txt,priority:pri?.value||'medium',done:false});
-  addXP(3,'Subtask added'); save(); renderProjectsPage();
-  setTimeout(()=>{ const el=$(`st-inp-${projId}`); if(el)el.focus(); },50);
-}
-
-function toggleSubtask(projId, stId) {
-  const p=S.projects.find(p=>p.id===projId); if(!p)return;
-  const st=p.subtasks.find(s=>s.id===stId); if(!st)return;
-  st.done=!st.done;
-  if(st.done)addXP(8,'Subtask done ✓');
-  // Check if all done
-  if(p.subtasks.every(s=>s.done)){ addXP(25,'Project complete! 🎉'); showToast('🎉 Project complete! +25 XP',3000); }
-  save(); renderProjectsPage();
-}
-
-function delSubtask(projId, stId) {
-  const p=S.projects.find(p=>p.id===projId); if(!p)return;
-  p.subtasks=p.subtasks.filter(s=>s.id!==stId); save(); renderProjectsPage();
-}
-
-function delProject(id) {
-  if(!confirm('Delete this project?'))return;
-  S.projects=S.projects.filter(p=>p.id!==id); save();
-  if(S.currentView===`proj:${id}`)sv('projects'); else renderProjectsPage();
-}
+function annToTask(id){const ann=S.announcements.find(a=>a.id===id);if(!ann)return;M('ait-inp').value=ann.title||ann.text.slice(0,120);M('ait-list').innerHTML=listOpts();M('aiTaskModal').showModal();}
+function clearAnnouncements(){if(!confirm('Clear all announcements?'))return;S.announcements=[];save();renderAll();}
 
 // ── TIMETABLE ─────────────────────────────────────
-function renderTimetable() {
-  $('main-title').textContent='📅 Timetable';
-  const ha=$('hactions'); ha.innerHTML='';
-  if(S.icsData){const cb=document.createElement('button');cb.className='btn btn-g btn-sm';cb.textContent='Replace ICS';cb.onclick=()=>$('ics-file-hidden').click();ha.appendChild(cb);}
-
-  const body=$('mbody'); body.innerHTML='';
-
+function renderTimetable(){
+  M('main-title').textContent='📅 Timetable';
+  const ha=M('hacts');ha.innerHTML='';
+  if(S.icsData){const rb=document.createElement('button');rb.className='btn btn-g btn-sm';rb.textContent='Replace ICS';rb.onclick=()=>M('ics-hidden').click();ha.appendChild(rb);}
+  const body=M('mbody');body.innerHTML='';
   if(!S.icsData){
     const up=document.createElement('div');up.className='tt-upload';
-    up.innerHTML=`<div class="tt-up-icon">📂</div><h3 style="margin-bottom:4px;font-size:.95rem;font-weight:700;">Upload your .ics timetable</h3><p style="font-size:.78rem;color:var(--muted);">Export from Google Calendar, Apple Calendar, or your school portal</p><input type="file" accept=".ics" id="ics-file-input" style="display:none;" onchange="handleICS(event)">`;
-    up.onclick=()=>$('ics-file-input').click();
-    body.appendChild(up);
+    up.innerHTML=`<div style="font-size:2rem;margin-bottom:8px;">📂</div><h3 style="font-size:.92rem;font-weight:700;margin-bottom:3px;">Upload your .ics timetable</h3><p style="font-size:.77rem;color:var(--muted);">Export from Google Calendar, Apple Calendar, or your school portal</p><input type="file" accept=".ics" id="ics-inp" style="display:none;" onchange="handleICS(event)">`;
+    up.onclick=()=>M('ics-inp').click();body.appendChild(up);
     return;
   }
-
-  // Hidden file input for replace
-  const hf=document.createElement('input');hf.type='file';hf.accept='.ics';hf.id='ics-file-hidden';hf.style.display='none';hf.onchange=e=>handleICS(e);
-  body.appendChild(hf);
-
+  const hf=document.createElement('input');hf.type='file';hf.accept='.ics';hf.id='ics-hidden';hf.style.display='none';hf.onchange=e=>handleICS(e);body.appendChild(hf);
   const events=parseICS(S.icsData);
-  const grouped=groupICSByDow(events);
-  const now=new Date(), nowDow=now.getDay(), nowMins=now.getHours()*60+now.getMinutes();
-  const DOW=[1,2,3,4,5,6,0]; // Mon–Sun
-  const DNAMES=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
-  const countEl=document.createElement('p');
-  countEl.style.cssText='font-size:.78rem;color:var(--muted);margin-bottom:12px;';
-  countEl.textContent=`${events.length} classes loaded from ICS`;
-  body.appendChild(countEl);
-
-  const grid=document.createElement('div');grid.className='tt-days-grid';
-  DOW.forEach(dow=>{
-    const dayEvs=grouped[dow]; if(!dayEvs||dayEvs.length===0)return;
+  const grouped=groupByDow(events);
+  const now=new Date();
+  const nowDow=now.getDay(),nowMins=now.getHours()*60+now.getMinutes();
+  const DOW_ORDER=[1,2,3,4,5,6,0];
+  const DOW_NAMES=['Sun','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const hdr=document.createElement('p');hdr.style.cssText='font-size:.77rem;color:var(--muted);margin-bottom:11px;';hdr.textContent=`${events.length} events loaded from ICS`;body.appendChild(hdr);
+  const wrap=document.createElement('div');wrap.className='tt-days-wrap';
+  DOW_ORDER.forEach(dow=>{
+    const evs=grouped[dow];if(!evs||evs.length===0)return;
     const isToday=dow===nowDow;
     const dayEl=document.createElement('div');dayEl.className='tt-day';
-    dayEl.innerHTML=`<div class="tt-day-hd"><span style="font-weight:700;">${DNAMES[dow]}${isToday?'<span style="font-weight:400;color:var(--muted);margin-left:6px;">Today</span>':''}</span>${isToday?'<span class="tt-now-tag">Today</span>':''}</div>`;
-    dayEvs.forEach(ev=>{
-      const startMins=ev.start.h*60+ev.start.m;
-      const endMins=ev.end?(ev.end.h*60+ev.end.m):startMins+60;
-      const isCurrent=isToday&&nowMins>=startMins&&nowMins<endMins;
-      const evEl=document.createElement('div');evEl.className='tt-ev'+(isCurrent?' now':'');
-      evEl.innerHTML=`<span class="ev-time">${pad(ev.start.h)}:${pad(ev.start.m)} – ${ev.end?pad(ev.end.h)+':'+pad(ev.end.m):'?'}</span><span class="ev-name">${esc(ev.summary)}${isCurrent?' <span style="font-size:.67rem;color:var(--accent);">▶ Now</span>':''}</span>${ev.location?`<span class="ev-loc">📍 ${esc(ev.location)}</span>`:''}`;
+    dayEl.innerHTML=`<div class="tt-day-hd"><span style="font-weight:700;">${DOW_NAMES[dow]}${isToday?'<span style="font-size:.72rem;font-weight:400;color:var(--muted);margin-left:5px;">— Today</span>':''}</span>${isToday?'<span class="tt-today-tag">Today</span>':''}</div>`;
+    evs.forEach(ev=>{
+      const sm=ev.startH*60+ev.startM;
+      const em=ev.endH*60+ev.endM;
+      const isCurrent=isToday&&nowMins>=sm&&nowMins<em;
+      const isPast=isToday&&nowMins>=em;
+      const evEl=document.createElement('div');evEl.className='tt-ev'+(isCurrent?' tt-now':'')+(isPast?' tt-past':'');
+      evEl.innerHTML=`${isCurrent?'<div class="ev-now-dot"></div>':''}
+        <span class="ev-time">${pad2(ev.startH)}:${pad2(ev.startM)} – ${pad2(ev.endH)}:${pad2(ev.endM)}</span>
+        <span class="ev-name">${esc(ev.summary)}${isCurrent?' <span style="font-size:.65rem;color:var(--actext);">▶ Now</span>':''}</span>
+        ${ev.location?`<span class="ev-loc">📍${esc(ev.location)}</span>`:''}`;
       dayEl.appendChild(evEl);
     });
-    grid.appendChild(dayEl);
+    wrap.appendChild(dayEl);
   });
-  if(grid.children.length===0)grid.innerHTML='<div class="empty"><div class="em">📅</div><h3>No events found</h3><p>Try a different .ics file.</p></div>';
-  body.appendChild(grid);
+  if(wrap.children.length===0)wrap.innerHTML='<div class="empty"><div class="em">📅</div><h3>No events found</h3><p>Try a different .ics file.</p></div>';
+  body.appendChild(wrap);
 }
 
-function handleICS(e) {
-  const file=e.target.files[0]; if(!file)return;
-  const r=new FileReader(); r.onload=ev=>{S.icsData=ev.target.result;save();renderAll();}; r.readAsText(file);
-}
+function handleICS(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{S.icsData=ev.target.result;save();renderAll();};r.readAsText(f);}
 
-function parseICS(text) {
-  const events=[], blocks=text.match(/BEGIN:VEVENT[\s\S]*?END:VEVENT/g)||[];
+function parseICS(text){
+  const events=[];
+  const blocks=text.replace(/\r\n[ \t]/g,'').replace(/\r/g,'').match(/BEGIN:VEVENT[\s\S]*?END:VEVENT/g)||[];
   blocks.forEach(block=>{
-    const lines=block.replace(/\r\n[ \t]/g,'').replace(/\r/g,'').split('\n');
-    const get=k=>{const l=lines.find(x=>x.match(new RegExp('^'+k+'(?:;[^:]+)?:')));return l?l.replace(/^[^:]+:/,'').trim():null;};
-    const parseDT=raw=>{if(!raw)return null;const m=raw.match(/^(\d{4})(\d{2})(\d{2})T?(\d{2})?(\d{2})?/);if(!m)return null;return{y:+m[1],mo:+m[2],d:+m[3],h:m[4]?+m[4]:0,m:m[5]?+m[5]:0,dow:new Date(+m[1],+m[2]-1,+m[3]).getDay()};};
-    const dtstartRaw=lines.find(l=>/^DTSTART/i.test(l));const dtendRaw=lines.find(l=>/^DTEND/i.test(l));
-    const start=parseDT(dtstartRaw?dtstartRaw.replace(/^[^:]+:/,'').trim():null);
-    const end=parseDT(dtendRaw?dtendRaw.replace(/^[^:]+:/,'').trim():null);
+    const lines=block.split('\n');
+    const get=k=>{const l=lines.find(x=>new RegExp(`^${k}(?:;[^:]+)?:`,'i').test(x));return l?l.replace(/^[^:]+:/,'').trim():null;};
+    // Parse DTSTART — handle both TZID and UTC
+    const dtstartLine=lines.find(l=>/^DTSTART/i.test(l));
+    const dtendLine=lines.find(l=>/^DTEND/i.test(l));
+    if(!dtstartLine)return;
+    const parsedt=raw=>{
+      if(!raw)return null;
+      // Strip TZID prefix if present
+      const val=raw.includes(':')?raw.split(':').slice(1).join(':').trim():raw.trim();
+      const m=val.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?(Z)?)?$/);
+      if(!m)return null;
+      const isUTC=m[7]==='Z';
+      const yr=+m[1],mo=+m[2]-1,dy=+m[3],hr=m[4]?+m[4]:0,mn=m[5]?+m[5]:0;
+      const d=isUTC?new Date(Date.UTC(yr,mo,dy,hr,mn)):new Date(yr,mo,dy,hr,mn);
+      return{h:d.getHours(),m:d.getMinutes(),dow:d.getDay(),dateStr:d.toISOString().split('T')[0]};
+    };
+    const start=parsedt(dtstartLine.replace(/^[^:]+:/,'').trim());
+    const endRaw=dtendLine?dtendLine.replace(/^[^:]+:/,'').trim():null;
+    const end=parsedt(endRaw);
     if(!start)return;
-    const summary=(get('SUMMARY')||'Untitled').replace(/\\n/g,' ').replace(/\\,/g,',');
+    const endH=end?end.h:start.h+1;
+    const endM=end?end.m:start.m;
+    const summary=(get('SUMMARY')||'Untitled').replace(/\\n/g,' ').replace(/\\,/g,',').replace(/\\;/g,';');
     const location=(get('LOCATION')||'').replace(/\\n/g,' ').replace(/\\,/g,',');
-    events.push({start,end,summary,location});
+    events.push({startH:start.h,startM:start.m,endH,endM,dow:start.dow,dateStr:start.dateStr,summary,location});
   });
   return events;
 }
 
-function groupICSByDow(events) {
+function groupByDow(events){
   const g={};
   events.forEach(ev=>{
-    const dow=ev.start.dow; if(!g[dow])g[dow]=[];
-    const key=`${ev.start.h}:${ev.start.m}-${ev.summary}`;
-    if(!g[dow].some(e=>`${e.start.h}:${e.start.m}-${e.summary}`===key))g[dow].push(ev);
+    if(!g[ev.dow])g[ev.dow]=[];
+    const key=`${ev.startH}:${ev.startM}-${ev.summary}`;
+    if(!g[ev.dow].some(e=>`${e.startH}:${e.startM}-${e.summary}`===key))g[ev.dow].push(ev);
   });
-  Object.keys(g).forEach(dow=>g[dow].sort((a,b)=>(a.start.h*60+a.start.m)-(b.start.h*60+b.start.m)));
+  Object.keys(g).forEach(dow=>g[dow].sort((a,b)=>(a.startH*60+a.startM)-(b.startH*60+b.startM)));
   return g;
 }
-const pad=n=>String(n).padStart(2,'0');
 
-// ── STUDY/FOCUS TIMER ─────────────────────────────
-function renderStudy() {
-  $('main-title').textContent = S.mode==='student'?'⏱ Study Session':'⏱ Focus Session';
-  $('hactions').innerHTML='';
-  const body=$('mbody'); body.innerHTML='';
-
-  const R=54, CIRC=2*Math.PI*R;
-  const pct=_timer.remaining/_timer.total;
-  const mins=Math.floor(_timer.remaining/60).toString().padStart(2,'0');
-  const secs=(_timer.remaining%60).toString().padStart(2,'0');
-  const offset=CIRC*(1-pct);
-
-  const wrap=document.createElement('div'); wrap.className='timer-wrap';
-  wrap.innerHTML=`
-    <div class="ring-wrap">
-      <svg class="ring-svg" width="136" height="136" viewBox="0 0 136 136">
-        <circle class="ring-bg" cx="68" cy="68" r="${R}"/>
-        <circle class="ring-fg" cx="68" cy="68" r="${R}" stroke-dasharray="${CIRC.toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}" id="timerRing" style="stroke:${_timer.isBreak?'var(--blue)':'var(--accent)'}"/>
-      </svg>
-      <div class="timer-inner">
-        <div class="timer-digs" id="timerDigs">${mins}:${secs}</div>
-        <div class="timer-lbl" id="timerLbl">${_timer.isBreak?'Break':'Focus'}</div>
-      </div>
-    </div>
-    <div class="timer-task" id="timerTask">${getTimerTaskLbl()}</div>
-    <div class="presets">
-      ${[15,25,50,90].map(m=>`<button class="preset${_timer.total===m*60&&!_timer.running?' on':''}" onclick="setTimerDur(${m})">${m} min</button>`).join('')}
-      <button class="preset" onclick="setCustomDur()">Custom</button>
-    </div>
-    <select class="inp" style="margin-bottom:12px;max-width:280px;width:100%;" id="timerTaskSel" onchange="setTimerTask(this.value)">
-      <option value="">No specific task</option>
-      ${S.tasks.filter(t=>!t.completed).map(t=>`<option value="${t.id}"${_timer.taskId===t.id?' selected':''}>${esc(t.text.slice(0,50))}</option>`).join('')}
-    </select>
-    <div class="timer-ctrls">
-      <button class="btn btn-g btn-sm" onclick="resetTimer()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Reset</button>
-      <button class="btn btn-p" id="timerPlayBtn" onclick="toggleTimer()" style="min-width:86px;justify-content:center;">${_timer.running?'⏸ Pause':'▶ Start'}</button>
-    </div>
-    <p style="font-size:.72rem;color:var(--muted);text-align:center;max-width:240px;">${S.mode==='student'?'Pomodoro: 25 min focus → 5 min break, repeat.':'Pick a duration and focus on one task at a time.'}</p>
-  `;
+// ── STUDY TIMER ───────────────────────────────────
+function renderStudy(){
+  M('main-title').textContent=S.mode==='student'?'⏱ Study Session':'⏱ Focus Session';
+  M('hacts').innerHTML='';
+  const body=M('mbody');body.innerHTML='';
+  const R=54,C=2*Math.PI*R,pct=_timer.remaining/_timer.total,off=C*(1-pct);
+  const mm=Math.floor(_timer.remaining/60).toString().padStart(2,'0'),ss=(_timer.remaining%60).toString().padStart(2,'0');
+  const wrap=document.createElement('div');wrap.className='timer-wrap';
+  wrap.innerHTML=`<div class="ring-wrap"><svg class="ring-svg" width="134" height="134" viewBox="0 0 134 134"><circle class="ring-bg" cx="67" cy="67" r="${R}"/><circle class="ring-fg" cx="67" cy="67" r="${R}" stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}" id="tRing" style="stroke:${_timer.isBreak?'var(--purple)':'var(--accent)'}"/></svg><div class="timer-inner"><div class="t-digs" id="tDigs">${mm}:${ss}</div><div class="t-lbl" id="tLbl">${_timer.isBreak?'Break':'Focus'}</div></div></div>
+    <div style="font-size:.77rem;color:var(--muted);margin-bottom:13px;text-align:center;max-width:230px;" id="tTask">${getTimerTask()}</div>
+    <div class="presets">${[15,25,50,90].map(m=>`<button class="preset${_timer.total===m*60&&!_timer.running?' on':''}" onclick="setTimerDur(${m})">${m} min</button>`).join('')}<button class="preset" onclick="setCustDur()">Custom</button></div>
+    <select class="inp" style="margin-bottom:11px;max-width:270px;width:100%;" id="tTaskSel" onchange="setTimerTask(this.value)"><option value="">No specific task</option>${S.tasks.filter(t=>!t.completed).map(t=>`<option value="${t.id}"${_timer.taskId===t.id?' selected':''}>${esc(t.text.slice(0,50))}</option>`).join('')}</select>
+    <div style="display:flex;gap:7px;align-items:center;margin-bottom:11px;"><button class="btn btn-g btn-sm" onclick="resetTimer()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Reset</button><button class="btn btn-p" id="tPlayBtn" onclick="toggleTimer()" style="min-width:84px;justify-content:center;">${_timer.running?'⏸ Pause':'▶ Start'}</button></div>
+    <p style="font-size:.7rem;color:var(--muted);text-align:center;max-width:230px;">${S.mode==='student'?'Pomodoro: 25 min focus → 5 min break.':'Pick a duration, focus on one task at a time.'}</p>`;
   body.appendChild(wrap);
 }
-function getTimerTaskLbl(){if(!_timer.taskId)return'No task selected';const t=S.tasks.find(t=>t.id===_timer.taskId);return t?`📌 ${t.text.slice(0,52)}`:'No task selected';}
-function toggleTimer(){
-  if(_timer.running){clearInterval(_timerInterval);_timerInterval=null;_timer.running=false;}
-  else{_timer.running=true;_timerInterval=setInterval(tickTimer,1000);}
-  const b=$('timerPlayBtn');if(b)b.textContent=_timer.running?'⏸ Pause':'▶ Start';
-}
-function tickTimer(){
-  if(_timer.remaining<=0){clearInterval(_timerInterval);_timerInterval=null;_timer.running=false;playDing();
-    if(_timer.isBreak){_timer.isBreak=false;_timer.remaining=_timer.total;}
-    else{addXP(20,'Focus session complete 🎯');_timer.isBreak=true;_timer.remaining=5*60;_timer.total=5*60;}
-    updateTimerUI();return;
-  }
-  _timer.remaining--;updateTimerUI();
-}
-function updateTimerUI(){
-  if(S.currentView!=='study')return;
-  const mins=Math.floor(_timer.remaining/60).toString().padStart(2,'0');
-  const secs=(_timer.remaining%60).toString().padStart(2,'0');
-  const d=$('timerDigs'),r=$('timerRing'),l=$('timerLbl'),b=$('timerPlayBtn');
-  if(d)d.textContent=`${mins}:${secs}`;
-  if(l)l.textContent=_timer.isBreak?'Break':'Focus';
-  if(b)b.textContent=_timer.running?'⏸ Pause':'▶ Start';
-  if(r){const R=54,C=2*Math.PI*R;r.style.strokeDasharray=C;r.style.strokeDashoffset=C*(1-_timer.remaining/_timer.total);r.style.stroke=_timer.isBreak?'var(--blue)':'var(--accent)';}
-}
-function resetTimer(){clearInterval(_timerInterval);_timerInterval=null;_timer.running=false;_timer.isBreak=false;_timer.remaining=_timer.total;if(S.currentView==='study')renderStudy();}
-function setTimerDur(m){clearInterval(_timerInterval);_timerInterval=null;_timer.running=false;_timer.isBreak=false;_timer.total=m*60;_timer.remaining=m*60;if(S.currentView==='study')renderStudy();}
-function setCustomDur(){const n=parseInt(prompt('Duration in minutes:','45'),10);if(n&&n>0)setTimerDur(n);}
-function setTimerTask(id){_timer.taskId=id||null;const t=$('timerTask');if(t)t.textContent=getTimerTaskLbl();}
-function playDing(){try{const ctx=new AudioContext(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.setValueAtTime(880,ctx.currentTime);o.frequency.setValueAtTime(660,ctx.currentTime+0.15);o.frequency.setValueAtTime(880,ctx.currentTime+0.3);g.gain.setValueAtTime(0.3,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.7);o.start();o.stop(ctx.currentTime+0.7);}catch(e){}}
+function getTimerTask(){if(!_timer.taskId)return'No task selected';const t=S.tasks.find(t=>t.id===_timer.taskId);return t?`📌 ${t.text.slice(0,52)}`:'No task selected';}
+function toggleTimer(){if(_timer.running){clearInterval(_timerIv);_timerIv=null;_timer.running=false;}else{_timer.running=true;_timerIv=setInterval(tickTimer,1000);}const b=M('tPlayBtn');if(b)b.textContent=_timer.running?'⏸ Pause':'▶ Start';}
+function tickTimer(){if(_timer.remaining<=0){clearInterval(_timerIv);_timerIv=null;_timer.running=false;playDing();if(_timer.isBreak){_timer.isBreak=false;_timer.remaining=_timer.total;}else{addXP(20,'Focus session done 🎯');_timer.isBreak=true;_timer.remaining=5*60;_timer.total=5*60;}updateTimerUI();return;}_timer.remaining--;updateTimerUI();}
+function updateTimerUI(){if(S.currentView!=='study')return;const mm=Math.floor(_timer.remaining/60).toString().padStart(2,'0'),ss=(_timer.remaining%60).toString().padStart(2,'0');const d=M('tDigs'),r=M('tRing'),l=M('tLbl'),b=M('tPlayBtn');if(d)d.textContent=`${mm}:${ss}`;if(l)l.textContent=_timer.isBreak?'Break':'Focus';if(b)b.textContent=_timer.running?'⏸ Pause':'▶ Start';if(r){const R=54,C=2*Math.PI*R;r.style.strokeDasharray=C;r.style.strokeDashoffset=C*(1-_timer.remaining/_timer.total);r.style.stroke=_timer.isBreak?'var(--purple)':'var(--accent)';}}
+function resetTimer(){clearInterval(_timerIv);_timerIv=null;_timer.running=false;_timer.isBreak=false;_timer.remaining=_timer.total;if(S.currentView==='study')renderStudy();}
+function setTimerDur(m){clearInterval(_timerIv);_timerIv=null;_timer.running=false;_timer.isBreak=false;_timer.total=m*60;_timer.remaining=m*60;if(S.currentView==='study')renderStudy();}
+function setCustDur(){const n=parseInt(prompt('Duration (minutes):','45'),10);if(n&&n>0)setTimerDur(n);}
+function setTimerTask(id){_timer.taskId=id||null;const t=M('tTask');if(t)t.textContent=getTimerTask();}
+function playDing(){try{const ctx=new AudioContext(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.setValueAtTime(880,ctx.currentTime);o.frequency.setValueAtTime(660,ctx.currentTime+0.15);o.frequency.setValueAtTime(880,ctx.currentTime+0.3);g.gain.setValueAtTime(0.3,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.7);o.start();o.stop(ctx.currentTime+0.75);}catch(e){}}
 
-// ── AI ────────────────────────────────────────────
-function openAITask(){
-  _aiTask=null; $('ait-input').value=''; $('ai-res-box').classList.remove('show');
-  $('ait-status').style.display='none'; $('ait-gen-btn').style.display='inline-flex'; $('ait-add-btn').style.display='none';
-  $('ait-list').innerHTML=listOpts(S.currentView!=='all'&&S.currentView!=='hotlist'&&S.currentView!=='study'&&S.currentView!=='timetable'&&S.currentView!=='streaks'&&S.currentView!=='projects'?S.currentView:'');
-  $('aiTaskModal').showModal();
-}
-async function aiGenTask(){
-  const desc=$('ait-input').value.trim();if(!desc)return;
-  if(!S.backendUrl){alert('Set your Backend URL in Settings.');return;}
-  $('ait-status').style.display='block';$('ait-gen-btn').style.display='none';$('ai-res-box').classList.remove('show');$('ait-add-btn').style.display='none';
-  try{
-    const res=await fetch(`${S.backendUrl}/ai/task`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({description:desc})});
-    const data=await res.json();
-    let raw=data.response||'';raw=raw.replace(/```json|```/g,'').trim();
-    _aiTask=JSON.parse(raw);
-    $('ai-res-title').textContent=_aiTask.title||'—';
-    const pb=$('ai-res-pri');pb.textContent=_aiTask.priority||'medium';pb.className='badge bdg-'+(_aiTask.priority||'medium');
-    const db=$('ai-res-date');if(_aiTask.dueDate){db.textContent='📅 '+_aiTask.dueDate;db.style.display='inline-flex';}else db.style.display='none';
-    $('ai-res-notes').textContent=_aiTask.notes||'';
-    $('ai-res-box').classList.add('show');$('ait-add-btn').style.display='inline-flex';
-  }catch(e){alert('AI error: '+(e.message||'Backend unreachable.'));$('ait-gen-btn').style.display='inline-flex';}
-  finally{$('ait-status').style.display='none';}
-}
-function aiAddTask(){
-  if(!_aiTask)return;
-  const listId=$('ait-list').value||Object.keys(S.lists)[0];
-  S.tasks.push({id:uid(),text:_aiTask.title,listId,priority:_aiTask.priority||'medium',dueDate:_aiTask.dueDate||'',completed:false,inHotlist:false,createdAt:Date.now()});
-  addXP(5,'AI task added'); save(); $('aiTaskModal').close(); renderAll();
-}
-async function aiGenPlan(){
-  if(!S.backendUrl){alert('Set your Backend URL in Settings.');return;}
-  const v=S.currentView;
-  let tasks;
-  if(v==='hotlist')tasks=S.tasks.filter(t=>t.inHotlist&&!t.completed);
-  else if(v==='all')tasks=S.tasks.filter(t=>!t.completed);
-  else tasks=S.tasks.filter(t=>t.listId===v&&!t.completed);
-  if(tasks.length===0){alert('No active tasks to plan!');return;}
-  const tod=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  const taskList=tasks.map((t,i)=>`${i+1}. "${t.text}" [Priority:${t.priority.toUpperCase()}, Due:${t.dueDate||'none'}]`).join('\n');
-  const prompt=`Today is ${tod}. Available: ${$('pl-start').value||'09:00'}–${$('pl-end').value||'17:00'}. Fixed events: ${$('pl-breaks').value.trim()||'none'}. Context: ${$('pl-ctx').value.trim()||'none'}.\n\nTasks:\n${taskList}`;
-  $('aiPlanModal').close();
-  const pc=document.getElementById('planCard');
-  if(pc){pc.style.display='block';pc.innerHTML='<div class="plan-hd"><span class="plan-lbl">✨ Action Plan</span></div><div style="display:flex;align-items:center;gap:8px;font-size:.83rem;color:var(--muted);font-style:italic;"><div class="spinner"></div>Generating with Groq…</div>';}
-  try{
-    const res=await fetch(`${S.backendUrl}/ai/plan`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
-    const data=await res.json();
-    S.aiPlan=data.response||'Could not generate plan.'; save();
-    if(pc)pc.innerHTML=`<div class="plan-hd"><span class="plan-lbl">✨ Action Plan</span><button class="ibt" onclick="clearPlan()" style="width:24px;height:24px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div><div class="plan-body">${esc(S.aiPlan)}</div>`;
-  }catch(e){if(pc)pc.innerHTML=`<div class="plan-hd"><span class="plan-lbl">✨ Action Plan</span></div><p style="color:var(--red);font-size:.83rem;">Error: ${esc(e.message||'Backend unreachable')}</p>`;}
-}
-function clearPlan(){S.aiPlan=null;save();const c=document.getElementById('planCard');if(c)c.style.display='none';}
+// ── AI ─────────────────────────────────────────────
+function openAITask(){_aiTask=null;M('ait-inp').value='';M('ai-res-box').classList.remove('show');M('ait-status').style.display='none';M('ait-gen-btn').style.display='inline-flex';M('ait-add-btn').style.display='none';const v=S.currentView;M('ait-list').innerHTML=listOpts(!['all','hotlist','study','timetable','streaks','projects','announcements','nolist'].includes(v)&&!v.startsWith('proj:')&&!v.startsWith('streak:')?v:'');M('aiTaskModal').showModal();}
+async function aiGenTask(){const desc=M('ait-inp').value.trim();if(!desc)return;if(!S.backendUrl){alert('Set Backend URL in Settings.');return;}M('ait-status').style.display='block';M('ait-gen-btn').style.display='none';M('ai-res-box').classList.remove('show');M('ait-add-btn').style.display='none';try{const r=await fetch(`${S.backendUrl}/ai/task`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({description:desc})});const d=await r.json();let raw=d.response||'';raw=raw.replace(/```json|```/g,'').trim();_aiTask=JSON.parse(raw);M('ai-res-title').textContent=_aiTask.title||'—';const pb=M('ai-res-pri');pb.textContent=_aiTask.priority||'medium';pb.className='badge bdg-'+(_aiTask.priority||'medium');const db=M('ai-res-date');if(_aiTask.dueDate){db.textContent='📅 '+_aiTask.dueDate;db.style.display='inline-flex';}else db.style.display='none';M('ai-res-notes').textContent=_aiTask.notes||'';M('ai-res-box').classList.add('show');M('ait-add-btn').style.display='inline-flex';}catch(e){alert('AI error: '+(e.message||'Backend unreachable.'));M('ait-gen-btn').style.display='inline-flex';}finally{M('ait-status').style.display='none';}}
+function aiAddTask(){if(!_aiTask)return;const listId=M('ait-list').value||null;S.tasks.push({id:uid(),text:_aiTask.title,listId,priority:_aiTask.priority||'medium',dueDate:_aiTask.dueDate||'',completed:false,inHotlist:false,createdAt:Date.now()});addXP(5,'AI task added');save();M('aiTaskModal').close();renderAll();}
+async function aiGenPlan(){if(!S.backendUrl){alert('Set Backend URL in Settings.');return;}const v=S.currentView;let tasks;if(v==='hotlist')tasks=S.tasks.filter(t=>t.inHotlist&&!t.completed);else if(v==='all')tasks=S.tasks.filter(t=>!t.completed);else tasks=S.tasks.filter(t=>t.listId===v&&!t.completed);if(tasks.length===0){alert('No active tasks to plan!');return;}const tod=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'});const tl=tasks.map((t,i)=>`${i+1}. "${t.text}" [Priority:${t.priority.toUpperCase()},Due:${t.dueDate||'none'}]`).join('\n');const prompt=`Today is ${tod}. Available: ${M('pl-s').value||'09:00'}–${M('pl-e').value||'17:00'}. Fixed: ${M('pl-brk').value.trim()||'none'}. Context: ${M('pl-ctx').value.trim()||'none'}.\n\nTasks:\n${tl}`;M('planModal').close();const pc=M('planCard');if(pc){pc.style.display='block';pc.innerHTML='<div class="plan-hd"><span class="plan-lbl">✨ Action Plan</span></div><div style="display:flex;align-items:center;gap:7px;font-size:.81rem;color:var(--muted);font-style:italic;"><div class="spinner"></div>Generating with Groq…</div>';}try{const r=await fetch(`${S.backendUrl}/ai/plan`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});const d=await r.json();S.aiPlan=d.response||'Could not generate plan.';save();if(pc)pc.innerHTML=`<div class="plan-hd"><span class="plan-lbl">✨ Action Plan</span><button class="ibt" onclick="clearPlan()" style="width:22px;height:22px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div><div class="plan-body">${esc(S.aiPlan)}</div>`;}catch(e){if(pc)pc.innerHTML=`<div class="plan-hd"><span class="plan-lbl">✨ Action Plan</span></div><p style="color:var(--red);font-size:.8rem;">Error: ${esc(e.message||'Backend unreachable')}</p>`;}}
+function clearPlan(){S.aiPlan=null;save();const c=M('planCard');if(c)c.style.display='none';}
 
-// ── SETTINGS / THEME ─────────────────────────────
-function openSettings(){$('set-name').value=S.name;$('set-mode').value=S.mode;$('set-be').value=S.backendUrl;$('set-gc').value=S.gcUrl;$('settingsModal').showModal();}
-function saveSettings(){S.name=$('set-name').value.trim()||S.name;S.mode=$('set-mode').value;S.backendUrl=$('set-be').value.trim();S.gcUrl=$('set-gc').value.trim();save();$('settingsModal').close();renderAll();}
+// ── SETTINGS ─────────────────────────────────────
+function openSettings(){M('set-name').value=S.name;M('set-mode').value=S.mode;M('set-be').value=S.backendUrl;M('set-gc').value=S.gcUrl;M('set-fb').value=S.fbConfig||'';M('settingsModal').showModal();}
+function saveSettings(){S.name=M('set-name').value.trim()||S.name;S.mode=M('set-mode').value;S.backendUrl=M('set-be').value.trim()||BACKEND;S.gcUrl=M('set-gc').value.trim();const fb=M('set-fb').value.trim();S.fbConfig=fb;if(fb){try{initFirebase(fb);}catch(e){}}save();M('settingsModal').close();renderAll();}
 function resetAll(){if(!confirm('Delete ALL data?'))return;localStorage.removeItem(SK);location.reload();}
-function openClassroomModal(){const url=S.gcUrl;if(url){$('gc-open-link').href=url;$('gc-link-area').style.display='block';$('gc-no-url').style.display='none';}else{$('gc-link-area').style.display='none';$('gc-no-url').style.display='block';}$('gcModal').showModal();}
+function openGCModal(){const url=S.gcUrl;if(url){M('gc-link').href=url;M('gc-link-wrap').style.display='block';M('gc-no-url').style.display='none';}else{M('gc-link-wrap').style.display='none';M('gc-no-url').style.display='block';}M('gcModal').showModal();}
 function toggleTheme(){S.theme=S.theme==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',S.theme);updateThemeIcon();save();}
-function updateThemeIcon(){const i=$('th-icon'),l=$('th-lbl');if(S.theme==='dark'){i.innerHTML='<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>';if(l)l.textContent='Light Mode';}else{i.innerHTML='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>';if(l)l.textContent='Dark Mode';}}
-
-// ── VIEW SWITCH ───────────────────────────────────
+function updateThemeIcon(){const i=M('th-icon'),l=M('th-lbl');if(S.theme==='dark'){i.innerHTML='<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>';if(l)l.textContent='Light Mode';}else{i.innerHTML='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>';if(l)l.textContent='Dark Mode';}}
 function sv(view){S.currentView=view;save();renderAll();}
-
-// ── BOOT ─────────────────────────────────────────
 init();
-</script>
-</body>
-</html>
+</script></body></html>
