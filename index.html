@@ -155,8 +155,10 @@ input[type="date"].inp,input[type="time"].inp{color-scheme:dark;}[data-theme="li
 .chk:checked{background:var(--accent);border-color:var(--accent);}
 .chk:checked::after{content:"✓";color:#fff;font-size:8px;font-weight:900;display:block;text-align:center;line-height:13px;}
 .tc-body{flex:1;min-width:0;}
-.tc-title{font-size:.845rem;font-weight:600;line-height:1.4;margin-bottom:4px;}
+.tc-title{font-size:.845rem;font-weight:600;line-height:1.4;margin-bottom:2px;}
 .tc.t-done .tc-title{text-decoration:line-through;color:var(--muted);}
+.tc-notes{font-size:.74rem;color:var(--muted);line-height:1.4;margin-bottom:4px;white-space:pre-wrap;word-break:break-word;}
+.tc.t-done .tc-notes{text-decoration:line-through;opacity:.6;}
 .tc-meta{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
 .tc-acts{display:flex;align-items:center;gap:2px;opacity:0;transition:opacity var(--t);flex-shrink:0;}
 .tc:hover .tc-acts{opacity:1;}
@@ -416,6 +418,7 @@ dialog[open]{animation:fuad .2s var(--ease);}
   <div class="mbdy">
     <input type="hidden" id="ed-id">
     <div class="field"><label class="flbl">Task name</label><input id="ed-txt" class="inp"></div>
+    <div class="field"><label class="flbl">Notes / subtitle <span style="font-weight:400;color:var(--subtle);">(optional)</span></label><textarea id="ed-notes" class="inp" style="min-height:52px;" placeholder="Add extra detail…"></textarea></div>
     <div class="row2">
       <div class="field"><label class="flbl">Due date</label><input id="ed-date" type="date" class="inp"></div>
       <div class="field"><label class="flbl">Priority</label><select id="ed-pri" class="inp"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
@@ -510,7 +513,7 @@ dialog[open]{animation:fuad .2s var(--ease);}
     <div class="field"><label class="flbl">AI Backend URL</label><input id="set-be" class="inp" placeholder="https://focus.simplifiedtest10.deno.net"></div>
     <p style="font-size:.69rem;color:var(--muted);margin-top:-4px;">Deploy <code style="background:var(--surf3);padding:1px 4px;border-radius:3px;font-size:.66rem;">deno-backend.ts</code> to <a href="https://console.deno.com/simplifiedtest10/focus" target="_blank" style="color:var(--actext);">console.deno.com/simplifiedtest10/focus</a></p>
     <hr class="divider">
-    <div class="field"><label class="flbl">Google Apps Script URL (Classroom)</label><input id="set-gc" class="inp" placeholder="https://script.google.com/macros/s/AKfycbyekej_Th_nAEfYNQdc5itu_9hN7miqwtDXvOXmvyS-lbW1p_J7FL9o20mbzqGfKAtg/exec"></div>
+    <div class="field"><label class="flbl">Google Apps Script URL (Classroom)</label><input id="set-gc" class="inp" placeholder="https://script.google.com/macros/s/…/exec"></div>
     <p style="font-size:.69rem;color:var(--muted);margin-top:-4px;">Paste your deployment URL from <code style="background:var(--surf3);padding:1px 4px;border-radius:3px;font-size:.66rem;">classroom-connector.gs</code></p>
     <hr class="divider">
     <p style="font-size:.76rem;font-weight:700;color:var(--txt);">Firebase (optional — sync across devices)</p>
@@ -522,14 +525,19 @@ dialog[open]{animation:fuad .2s var(--ease);}
   <div class="mft"><button class="btn btn-g btn-sm" onclick="M('settingsModal').close()">Cancel</button><button class="btn btn-p btn-sm" onclick="saveSettings()">Save</button></div>
 </dialog>
 <!-- Classroom modal -->
-<dialog id="gcModal">
-  <div class="mhd2"><span class="mtitle">🎒 Google Classroom</span><button class="mclose" onclick="M('gcModal').close()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
-  <div class="mbdy">
-    <p style="font-size:.81rem;color:var(--muted);line-height:1.6;">Your Google Apps Script page shows your Classroom assignments and announcements. Clicking any item redirects back here with URL params.</p>
-    <div id="gc-link-wrap" style="display:none;"><a id="gc-link" href="#" target="_blank" class="btn btn-p" style="width:100%;justify-content:center;">Open Classroom Connector →</a></div>
-    <div id="gc-no-url" style="display:none;font-size:.81rem;color:var(--orange);">No Apps Script URL set — add one in <strong>Settings</strong>.</div>
+<dialog id="gcModal" style="max-width:700px;width:calc(100vw - 20px);">
+  <div class="mhd2"><span class="mtitle">🎒 Google Classroom</span><button class="mclose" onclick="closeGCModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div class="mbdy" style="padding:0;">
+    <div id="gc-iframe-wrap" style="display:none;flex-direction:column;gap:0;">
+      <div style="padding:8px 14px;background:var(--surf2);border-bottom:1px solid var(--bdr);font-size:.73rem;color:var(--muted);display:flex;align-items:center;gap:6px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+        Classroom assignments load below. Click <strong>Import →</strong> to add a task to Tempo.
+      </div>
+      <iframe id="gc-frame" src="" style="width:100%;height:460px;border:none;display:block;" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation"></iframe>
+    </div>
+    <div id="gc-no-url" style="display:none;padding:16px;font-size:.81rem;color:var(--orange);">⚠ No Apps Script URL set — add one in <strong>Settings</strong>.</div>
   </div>
-  <div class="mft"><button class="btn btn-g btn-sm" onclick="openSettings();M('gcModal').close()">Configure</button><button class="btn btn-g btn-sm" onclick="M('gcModal').close()">Close</button></div>
+  <div class="mft"><button class="btn btn-g btn-sm" onclick="openSettings();closeGCModal()">Settings</button><button class="btn btn-g btn-sm" onclick="closeGCModal()">Close</button></div>
 </dialog>
 <script>
 /* ═══════════════════════════════════════════════
@@ -650,19 +658,25 @@ function load(){
 }
 
 // ── FIREBASE ──────────────────────────────────────
+let _fbAuthUnsub = null;
 function initFirebase(configStr){
   try{
-    const cfg=JSON.parse(configStr);
-    if(!cfg.apiKey)return;
-    if(!firebase.apps.length) firebase.initializeApp(cfg);
-    else if(firebase.apps[0]) firebase.apps[0].delete().then(()=>firebase.initializeApp(cfg));
-    _fbAuth=firebase.auth(); _fbDb=firebase.firestore();
-    _fbAuth.onAuthStateChanged(user=>{
-      _fbUser=user;
+    const cfg = typeof configStr === 'string' ? JSON.parse(configStr) : configStr;
+    if(!cfg.apiKey) return;
+    // Only initialise once; reuse existing app if already up
+    if(!firebase.apps.length){
+      firebase.initializeApp(cfg);
+    }
+    _fbAuth = firebase.auth();
+    _fbDb   = firebase.firestore();
+    // Unsubscribe any previous listener before registering a new one
+    if(_fbAuthUnsub){ _fbAuthUnsub(); _fbAuthUnsub=null; }
+    _fbAuthUnsub = _fbAuth.onAuthStateChanged(user=>{
+      _fbUser = user;
       updateSignInBtn();
       if(user) syncFromFirestore();
     });
-  }catch(e){console.warn('Firebase init:',e);}
+  }catch(e){ console.warn('Firebase init:',e); }
 }
 function googleSignIn(){
   if(!_fbAuth){
@@ -836,7 +850,8 @@ function renderTasksView(){
       <input type="date" id="task-date" class="inp" style="flex:1;min-width:115px;">
       <select id="task-pri" class="inp" style="flex:1;min-width:105px;"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>
       ${isAll||isNL?`<select id="task-list" class="inp" style="flex:1;min-width:115px;">${listOpts()}</select>`:''}
-    </div>`;
+    </div>
+    <input id="task-notes" class="inp" placeholder="Notes / subtitle… (optional)" style="margin-top:5px;font-size:.8rem;">`;
     body.appendChild(ab2);
     M('task-input').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
   }
@@ -864,8 +879,9 @@ function renderTasksView(){
     const dateBdg=task.dueDate?`<span class="badge bdg-date ${over?'overdue':isToday?'today':soon?'soon':''}">${over?'⚠ Overdue':isToday?'Today':fmtDate(task.dueDate)}</span>`:'';
     const listBdg=(isAll||isHL||isNL)&&tList?`<span class="badge" style="color:${tList.color};background:${tList.color}18;border:1px solid ${tList.color}30;">${esc(tList.name)}</span>`:'';
     const hlBdg=task.inHotlist&&!isHL?'<span class="badge" style="background:var(--orangedim);color:var(--orange);">⭐</span>':'';
+    const notesTxt=task.notes?`<div class="tc-notes">${esc(task.notes)}</div>`:'';
     c.innerHTML=`<input type="checkbox" class="chk" ${task.completed?'checked':''} onchange="toggleTask('${task.id}')">
-      <div class="tc-body"><div class="tc-title">${esc(task.text)}</div><div class="tc-meta"><span class="badge bdg-${task.priority}">${task.priority}</span>${dateBdg}${listBdg}${hlBdg}</div></div>
+      <div class="tc-body"><div class="tc-title">${esc(task.text)}</div>${notesTxt}<div class="tc-meta"><span class="badge bdg-${task.priority}">${task.priority}</span>${dateBdg}${listBdg}${hlBdg}</div></div>
       <div class="tc-acts">
         <button class="ta" onclick="toggleHL('${task.id}')" title="${task.inHotlist?'Remove from Hotlist':'Add to Hotlist'}" style="${task.inHotlist?'color:var(--orange);':''}" ><svg width="11" height="11" viewBox="0 0 24 24" fill="${task.inHotlist?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></button>
         <button class="ta" onclick="openEdit('${task.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg></button>
@@ -882,14 +898,15 @@ function addTask(){
   let listId=null;
   if(S.currentView==='all'||S.currentView==='nolist')listId=M('task-list')?.value||null;
   else if(S.currentView!=='hotlist')listId=S.currentView;
-  S.tasks.push({id:uid(),text,listId:listId||null,priority:M('task-pri')?.value||'medium',dueDate:M('task-date')?.value||'',completed:false,inHotlist:false,createdAt:Date.now()});
-  inp.value='';addXP(5,'Task added');save();renderAll();
+  const notes=M('task-notes')?.value.trim()||'';
+  S.tasks.push({id:uid(),text,notes,listId:listId||null,priority:M('task-pri')?.value||'medium',dueDate:M('task-date')?.value||'',completed:false,inHotlist:false,createdAt:Date.now()});
+  inp.value='';const ni=M('task-notes');if(ni)ni.value='';addXP(5,'Task added');save();renderAll();
 }
 function toggleTask(id){const t=S.tasks.find(t=>t.id===id);if(!t)return;t.completed=!t.completed;if(t.completed)addXP(10,'Task done ✓');save();renderAll();}
 function delTask(id){S.tasks=S.tasks.filter(t=>t.id!==id);save();renderAll();}
 function toggleHL(id){const t=S.tasks.find(t=>t.id===id);if(t){t.inHotlist=!t.inHotlist;save();renderAll();}}
-function openEdit(id){const t=S.tasks.find(t=>t.id===id);if(!t)return;M('ed-id').value=id;M('ed-txt').value=t.text;M('ed-date').value=t.dueDate||'';M('ed-pri').value=t.priority;M('ed-list').innerHTML=listOpts(t.listId||'');M('editModal').showModal();}
-function saveEdit(){const t=S.tasks.find(t=>t.id===M('ed-id').value);if(!t)return;t.text=M('ed-txt').value.trim()||t.text;t.dueDate=M('ed-date').value;t.priority=M('ed-pri').value;t.listId=M('ed-list').value||null;save();M('editModal').close();renderAll();}
+function openEdit(id){const t=S.tasks.find(t=>t.id===id);if(!t)return;M('ed-id').value=id;M('ed-txt').value=t.text;M('ed-notes').value=t.notes||'';M('ed-date').value=t.dueDate||'';M('ed-pri').value=t.priority;M('ed-list').innerHTML=listOpts(t.listId||'');M('editModal').showModal();}
+function saveEdit(){const t=S.tasks.find(t=>t.id===M('ed-id').value);if(!t)return;t.text=M('ed-txt').value.trim()||t.text;t.notes=M('ed-notes').value.trim();t.dueDate=M('ed-date').value;t.priority=M('ed-pri').value;t.listId=M('ed-list').value||null;save();M('editModal').close();renderAll();}
 
 // ── LISTS ─────────────────────────────────────────
 function openAddList(){_listColor=COLORS[Math.floor(Math.random()*COLORS.length)];M('nl-name').value='';renderSw('nl-sw','_listColor');M('listModal').showModal();}
@@ -1165,8 +1182,8 @@ function playDing(){try{const ctx=new AudioContext(),o=ctx.createOscillator(),g=
 
 // ── AI ─────────────────────────────────────────────
 function openAITask(){_aiTask=null;M('ait-inp').value='';M('ai-res-box').classList.remove('show');M('ait-status').style.display='none';M('ait-gen-btn').style.display='inline-flex';M('ait-add-btn').style.display='none';const v=S.currentView;M('ait-list').innerHTML=listOpts(!['all','hotlist','study','timetable','streaks','projects','announcements','nolist'].includes(v)&&!v.startsWith('proj:')&&!v.startsWith('streak:')?v:'');M('aiTaskModal').showModal();}
-async function aiGenTask(){const desc=M('ait-inp').value.trim();if(!desc)return;if(!S.backendUrl){alert('Set Backend URL in Settings.');return;}M('ait-status').style.display='block';M('ait-gen-btn').style.display='none';M('ai-res-box').classList.remove('show');M('ait-add-btn').style.display='none';try{const r=await fetch(`${S.backendUrl}/ai/task`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({description:desc})});if(!r.ok)throw new Error(`Backend returned HTTP ${r.status}`);const d=await r.json();let raw=(d.response||'').replace(/```json|```/g,'').trim();const match=raw.match(/\{[\s\S]*\}/);if(!match)throw new Error('No JSON in response. Backend said: '+raw.slice(0,120));_aiTask=JSON.parse(match[0]);M('ai-res-title').textContent=_aiTask.title||'—';const pb=M('ai-res-pri');pb.textContent=_aiTask.priority||'medium';pb.className='badge bdg-'+(_aiTask.priority||'medium');const db=M('ai-res-date');if(_aiTask.dueDate){db.textContent='📅 '+_aiTask.dueDate;db.style.display='inline-flex';}else db.style.display='none';M('ai-res-notes').textContent=_aiTask.notes||'';M('ai-res-box').classList.add('show');M('ait-add-btn').style.display='inline-flex';}catch(e){alert('AI error: '+(e.message||'Backend unreachable. Check Settings → AI Backend URL.'));M('ait-gen-btn').style.display='inline-flex';}finally{M('ait-status').style.display='none';}}
-function aiAddTask(){if(!_aiTask)return;const listId=M('ait-list').value||null;S.tasks.push({id:uid(),text:_aiTask.title,listId,priority:_aiTask.priority||'medium',dueDate:_aiTask.dueDate||'',completed:false,inHotlist:false,createdAt:Date.now()});addXP(5,'AI task added');save();M('aiTaskModal').close();renderAll();}
+async function aiGenTask(){const desc=M('ait-inp').value.trim();if(!desc)return;if(!S.backendUrl){alert('Set Backend URL in Settings.');return;}M('ait-status').style.display='block';M('ait-gen-btn').style.display='none';M('ai-res-box').classList.remove('show');M('ait-add-btn').style.display='none';try{const r=await fetch(`${S.backendUrl}/ai/task`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({description:desc})});const d=await r.json().catch(()=>({}));if(!r.ok){throw new Error(d.error||`Backend HTTP ${r.status}`);}let raw=(d.response||'').replace(/```json|```/g,'').trim();if(!raw||raw.includes('API error')||raw.includes('not configured')){throw new Error('AI key error: '+raw);}const match=raw.match(/\{[\s\S]*\}/);if(!match)throw new Error('Bad AI response: '+raw.slice(0,120));_aiTask=JSON.parse(match[0]);M('ai-res-title').textContent=_aiTask.title||'—';const pb=M('ai-res-pri');pb.textContent=_aiTask.priority||'medium';pb.className='badge bdg-'+(_aiTask.priority||'medium');const db=M('ai-res-date');if(_aiTask.dueDate&&_aiTask.dueDate!=='null'){db.textContent='📅 '+_aiTask.dueDate;db.style.display='inline-flex';}else db.style.display='none';M('ai-res-notes').textContent=_aiTask.notes||'';M('ai-res-box').classList.add('show');M('ait-add-btn').style.display='inline-flex';}catch(e){alert('AI error: '+(e.message||'Backend unreachable. Check Settings → AI Backend URL.'));M('ait-gen-btn').style.display='inline-flex';}finally{M('ait-status').style.display='none';}}
+function aiAddTask(){if(!_aiTask)return;const listId=M('ait-list').value||null;S.tasks.push({id:uid(),text:_aiTask.title,notes:_aiTask.notes||'',listId,priority:_aiTask.priority||'medium',dueDate:_aiTask.dueDate||'',completed:false,inHotlist:false,createdAt:Date.now()});addXP(5,'AI task added');save();M('aiTaskModal').close();renderAll();}
 async function aiGenPlan(){if(!S.backendUrl){alert('Set Backend URL in Settings.');return;}const v=S.currentView;let tasks;if(v==='hotlist')tasks=S.tasks.filter(t=>t.inHotlist&&!t.completed);else if(v==='all')tasks=S.tasks.filter(t=>!t.completed);else tasks=S.tasks.filter(t=>t.listId===v&&!t.completed);if(tasks.length===0){alert('No active tasks to plan!');return;}const tod=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'});const tl=tasks.map((t,i)=>`${i+1}. "${t.text}" [Priority:${t.priority.toUpperCase()},Due:${t.dueDate||'none'}]`).join('\n');const prompt=`Today is ${tod}. Available: ${M('pl-s').value||'09:00'}–${M('pl-e').value||'17:00'}. Fixed: ${M('pl-brk').value.trim()||'none'}. Context: ${M('pl-ctx').value.trim()||'none'}.\n\nTasks:\n${tl}`;M('planModal').close();const pc=M('planCard');if(pc){pc.style.display='block';pc.innerHTML='<div class="plan-hd"><span class="plan-lbl">✨ Action Plan</span></div><div style="display:flex;align-items:center;gap:7px;font-size:.81rem;color:var(--muted);font-style:italic;"><div class="spinner"></div>Generating with Groq…</div>';}try{const r=await fetch(`${S.backendUrl}/ai/plan`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});const d=await r.json();S.aiPlan=d.response||'Could not generate plan.';save();if(pc)pc.innerHTML=`<div class="plan-hd"><span class="plan-lbl">✨ Action Plan</span><button class="ibt" onclick="clearPlan()" style="width:22px;height:22px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div><div class="plan-body">${esc(S.aiPlan)}</div>`;}catch(e){if(pc)pc.innerHTML=`<div class="plan-hd"><span class="plan-lbl">✨ Action Plan</span></div><p style="color:var(--red);font-size:.8rem;">Error: ${esc(e.message||'Backend unreachable')}</p>`;}}
 function clearPlan(){S.aiPlan=null;save();const c=M('planCard');if(c)c.style.display='none';}
 
@@ -1174,7 +1191,20 @@ function clearPlan(){S.aiPlan=null;save();const c=M('planCard');if(c)c.style.dis
 function openSettings(){M('set-name').value=S.name;M('set-mode').value=S.mode;M('set-be').value=S.backendUrl;M('set-gc').value=S.gcUrl||HARDCODED_GC_URL;M('set-fb').value=S.fbConfig||JSON.stringify(HARDCODED_FIREBASE,null,2);M('settingsModal').showModal();}
 function saveSettings(){S.name=M('set-name').value.trim()||S.name;S.mode=M('set-mode').value;S.backendUrl=M('set-be').value.trim()||BACKEND;S.gcUrl=M('set-gc').value.trim();const fb=M('set-fb').value.trim();S.fbConfig=fb;if(fb){try{initFirebase(fb);}catch(e){}}save();M('settingsModal').close();renderAll();}
 function resetAll(){if(!confirm('Delete ALL data?'))return;localStorage.removeItem(SK);location.reload();}
-function openGCModal(){const url=S.gcUrl;if(url){M('gc-link').href=url;M('gc-link-wrap').style.display='block';M('gc-no-url').style.display='none';}else{M('gc-link-wrap').style.display='none';M('gc-no-url').style.display='block';}M('gcModal').showModal();}
+function openGCModal(){
+  const url = S.gcUrl || HARDCODED_GC_URL;
+  if(url){
+    M('gc-frame').src = url;
+    M('gc-iframe-wrap').style.display='flex';
+    M('gc-no-url').style.display='none';
+  } else {
+    M('gc-frame').src='';
+    M('gc-iframe-wrap').style.display='none';
+    M('gc-no-url').style.display='block';
+  }
+  M('gcModal').showModal();
+}
+function closeGCModal(){ M('gc-frame').src=''; M('gcModal').close(); }
 function toggleTheme(){S.theme=S.theme==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',S.theme);updateThemeIcon();save();}
 function updateThemeIcon(){const i=M('th-icon'),l=M('th-lbl');if(S.theme==='dark'){i.innerHTML='<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>';if(l)l.textContent='Light Mode';}else{i.innerHTML='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>';if(l)l.textContent='Dark Mode';}}
 function sv(view){S.currentView=view;save();renderAll();}
